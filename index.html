@@ -1,0 +1,2954 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="無毒青春跑道">
+    <title>無毒青春：跑道大冒險（可愛嘉年華版 v8） - 天主教新民書院 DO NOT 隊伍</title>
+    <!-- App Icon & Favicon (icon.png) -->
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Universal Traditional Chinese & HK Cantonese Cute Fonts (Fredoka + Chiron Hei HK + Noto Sans TC) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chiron+Hei+HK:wght@700;900&family=Fredoka:wght@600;700&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Three.js Engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            /* Universal Traditional Chinese + HK Cantonese + Cute Rounded Font Stack */
+            --cute-font: 'Fredoka', 'Chiron Hei HK', 'Noto Sans TC', 'PingFang HK', 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            touch-action: manipulation;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            font-family: var(--cute-font);
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            font-family: var(--cute-font);
+            background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 60%, #fef9c3 100%);
+        }
+        /* Cute Candy Polka-Dot Card */
+        .carnival-card {
+            background-color: rgba(255, 255, 255, 0.97);
+            background-image: radial-gradient(rgba(250, 204, 21, 0.16) 2px, transparent 2px), radial-gradient(rgba(56, 189, 248, 0.14) 2px, rgba(255, 255, 255, 0.97) 2px);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 4px solid #facc15;
+            box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.26), 0 5px 0 #eab308, 0 0 0 3px rgba(255, 255, 255, 0.9) inset;
+        }
+        /* Cute Glossy HUD Pill */
+        .hud-pill {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid #fde047;
+            box-shadow: 0 3px 0 rgba(202, 138, 4, 0.65), 0 5px 12px rgba(0, 0, 0, 0.22), inset 0 2px 1px rgba(255, 255, 255, 0.25);
+        }
+        /* Squishy 3D Jelly YES Button */
+        .btn-3d-yes {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(180deg, #4ade80 0%, #10b981 55%, #059669 100%);
+            border: 4px solid #ffffff;
+            box-shadow: 0 7px 0 #047857, 0 12px 20px rgba(0, 0, 0, 0.32), inset 0 4px 0 rgba(255, 255, 255, 5);
+            transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s ease;
+        }
+        .btn-3d-yes:active, .btn-3d-yes.active-lane {
+            transform: translateY(4px) scale(0.97);
+            box-shadow: 0 3px 0 #047857, 0 6px 12px rgba(16, 185, 129, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+        }
+        .btn-3d-yes.selected-glow {
+            box-shadow: 0 7px 0 #047857, 0 0 26px 7px rgba(52, 211, 153, 0.92), inset 0 4px 0 rgba(255, 255, 255, 0.65);
+            border-color: #fef08a;
+        }
+        /* Squishy 3D Jelly NO Button */
+        .btn-3d-no {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(180deg, #fb7185 0%, #ef4444 55%, #dc2626 100%);
+            border: 4px solid #ffffff;
+            box-shadow: 0 7px 0 #991b1b, 0 12px 20px rgba(0, 0, 0, 0.32), inset 0 4px 0 rgba(255, 255, 255, 0.55);
+            transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s ease;
+        }
+        .btn-3d-no:active, .btn-3d-no.active-lane {
+            transform: translateY(4px) scale(0.97);
+            box-shadow: 0 3px 0 #991b1b, 0 6px 12px rgba(239, 68, 68, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+        }
+        .btn-3d-no.selected-glow {
+            box-shadow: 0 7px 0 #991b1b, 0 0 26px 7px rgba(251, 113, 133, 0.92), inset 0 4px 0 rgba(255, 255, 255, 0.65);
+            border-color: #fef08a;
+        }
+        /* Cute Jelly Action Button */
+        .btn-jelly-action {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(180deg, #34d399 0%, #10b981 45%, #0ea5e9 100%);
+            border: 4px solid #ffffff;
+            box-shadow: 0 6px 0 #0369a1, 0 12px 24px rgba(14, 165, 233, 0.4), inset 0 4px 0 rgba(255, 255, 255, 0.6);
+            transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+        }
+        .btn-jelly-action:active {
+            transform: translateY(4px) scale(0.97);
+            box-shadow: 0 2px 0 #0369a1, 0 6px 12px rgba(14, 165, 233, 0.35);
+        }
+        .btn-bounce {
+            -webkit-appearance: none;
+            appearance: none;
+            transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-bounce:active {
+            transform: scale(0.92);
+        }
+        /* Cute Rounded Sticker Text Shadow */
+        .cute-title-shadow {
+            text-shadow: 0 2px 0 #ffffff, 0 -1px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff, 0 4px 10px rgba(15, 23, 42, 0.18);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.85) translateY(-8px); opacity: 0; }
+            65% { transform: scale(1.03) translateY(2px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .animate-question-pop {
+            animation: popIn 0.34s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes floatMascot {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-5px) rotate(2deg); }
+        }
+        .animate-float-mascot {
+            animation: floatMascot 2.2s ease-in-out infinite;
+        }
+        @keyframes starPop {
+            0% { transform: scale(0) rotate(-35deg); opacity: 0; }
+            70% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-star-pop {
+            animation: starPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes feedbackToastLong {
+            0% { transform: scale(0.65) translateY(25px); opacity: 0; }
+            8% { transform: scale(1.03) translateY(-3px); opacity: 1; }
+            14% { transform: scale(1) translateY(0); opacity: 1; }
+            90% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(0.92) translateY(12px); opacity: 0; }
+        }
+        .animate-feedback-toast {
+            animation: feedbackToastLong 4.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes floatScore {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            50% { transform: translateY(-42px) scale(1.18); opacity: 1; }
+            100% { transform: translateY(-80px) scale(0.95); opacity: 0; }
+        }
+        .animate-score-popup {
+            animation: floatScore 0.95s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+        @keyframes pulseSlowdown {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .animate-pulse-hint {
+            animation: pulseSlowdown 0.8s ease-in-out infinite;
+        }
+        /* Kid-Friendly Range Slider Styling for iPad, iPhone Safari & Android Touch */
+        input[type="range"].bgm-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            user-select: auto;
+            -webkit-user-select: auto;
+            touch-action: pan-x;
+            height: 8px;
+            min-width: 0;
+            background: #cbd5e1;
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"].bgm-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f59e0b;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            cursor: pointer;
+        }
+        input[type="range"].bgm-slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f59e0b;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            cursor: pointer;
+        }
+        .safe-top {
+            padding-top: max(env(safe-area-inset-top, 0px), 6px);
+        }
+        .safe-bottom {
+            padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none overflow-hidden text-slate-900">
+
+    <!-- Hidden Font Pre-Warmer: Forces Safari/Mobile browsers to download all HK Cantonese & Traditional Chinese glyphs immediately -->
+    <div aria-hidden="true" style="position:fixed; left:-9999px; top:-9999px; opacity:0; pointer-events:none; font-weight:900; font-family:var(--cute-font);">
+        食大麻朱古力？試食一粒毒品？幫人收埋毒品？亂飲止咳藥水？有事搵家人幫？見到毒品報警？食嘢前睇清楚？好好保護自己？
+        唔好試 DO NOT！要！不要！正確好行為！遠離毒品！第12345關：終點過關！星星+300分！掂到毒品-300分！連勝答啱！
+        家人同老師最錫你，有事記得搵佢哋！搵家人幫手、見毒品報警、保護自己！
+    </div>
+
+    <!-- 3D Game Canvas Container -->
+    <div id="canvas-container" class="w-full h-full absolute inset-0 z-0"></div>
+
+    <!-- Celebration Confetti Canvas Overlay (Active on Victory / Result Screen) -->
+    <canvas id="confetti-canvas" class="w-full h-full absolute inset-0 z-45 pointer-events-none hidden"></canvas>
+
+    <!-- Screen Flash on Wrong Choice or Hitting Drug -->
+    <div id="damage-flash" class="absolute inset-0 bg-rose-500/35 z-15 pointer-events-none opacity-0 transition-opacity duration-150"></div>
+
+    <!-- Dynamic Floating Score Popups Container -->
+    <div id="score-popups-container" class="absolute inset-0 z-25 pointer-events-none overflow-hidden flex items-center justify-center"></div>
+
+    <!-- Direct Touch / Click Split Zones for Track (Works on iPad, Phone & Mac) -->
+    <div id="touch-controller" class="absolute inset-0 z-10 hidden flex">
+        <div id="zone-left" class="w-1/2 h-full cursor-pointer" title="拍左邊：⭕ 要！"></div>
+        <div id="zone-right" class="w-1/2 h-full cursor-pointer" title="拍右邊：❌ 不要！"></div>
+    </div>
+
+    <!-- Cute Mascot Reaction Toast (Enlarged Mobile Text + Extended 4.6s Display) -->
+    <div id="mascot-reaction-container" class="absolute inset-x-0 bottom-36 sm:bottom-40 md:bottom-44 z-30 pointer-events-none flex flex-col items-center justify-center hidden px-2.5">
+        <div id="mascot-reaction-card" class="px-4 py-3 sm:px-6 sm:py-4 rounded-[1.8rem] border-4 shadow-2xl flex items-center gap-3 max-w-lg w-full mx-auto bg-white/95 backdrop-blur-md">
+            <img id="mascot-reaction-img" src="mascot_yes.png" alt="吉祥物" class="w-16 h-16 sm:w-20 sm:h-20 object-contain shrink-0 drop-shadow-md" />
+            <div class="flex-1 min-w-0 text-left">
+                <div id="mascot-reaction-title" class="text-lg sm:text-xl font-black flex items-center gap-1.5 mb-0.5"></div>
+                <div id="mascot-reaction-desc" class="text-base sm:text-lg font-black text-slate-800 leading-snug break-words"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD Layer (Guaranteed Zero Overflow on Mobile + Giant Readable Question & Choice Fonts) -->
+    <div id="hud" class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between px-2 py-1.5 sm:p-4 safe-top safe-bottom hidden">
+        
+        <!-- TOP SECTION: Compact Non-Overflow Status Bar + Full-Width Giant Question Stage -->
+        <div class="w-full max-w-5xl mx-auto flex flex-col gap-1.5 sm:gap-2">
+            
+            <!-- Row 1: Controls, 5-Star Progress & Always-Visible Top-Right Score -->
+            <div class="w-full flex justify-between items-center gap-1 sm:gap-2">
+                <!-- Left Utility Buttons (Compact on Mobile so Score NEVER goes off-screen!) -->
+                <div class="flex items-center gap-1 sm:gap-1.5 pointer-events-auto shrink-0">
+                    <button id="btn-pause" type="button" class="btn-bounce bg-slate-900/90 hover:bg-slate-800 text-amber-300 font-black rounded-xl sm:rounded-2xl shadow-lg border-2 border-amber-400 flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-xs sm:text-base" title="暫停 / 音樂設定">
+                        <i class="fa-solid fa-pause"></i>
+                    </button>
+                    <button id="btn-voice-toggle" type="button" class="btn-bounce bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-2 sm:px-3 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white flex items-center justify-center h-8 sm:h-10 gap-1 text-xs sm:text-sm whitespace-nowrap" title="開關題目語音">
+                        <i id="icon-voice" class="fa-solid fa-volume-high text-xs sm:text-sm"></i>
+                        <span id="text-voice" class="hidden md:inline">讀題：開</span>
+                    </button>
+
+                    <!-- BGM Control Pill (Now supports direct touch slider on both Mobile & Tablet/Desktop) -->
+                    <div class="hud-pill px-2 sm:px-3 h-8 sm:h-10 rounded-xl sm:rounded-2xl flex items-center gap-1 sm:gap-1.5 text-white">
+                        <button id="btn-bgm-mute" type="button" class="text-amber-300 hover:text-amber-200 flex items-center justify-center w-5 h-5 shrink-0" title="靜音/開啟背景音樂">
+                            <i id="icon-bgm" class="fa-solid fa-music text-xs sm:text-sm"></i>
+                        </button>
+                        <input id="slider-bgm-hud" type="range" min="0" max="100" value="35" class="bgm-slider w-12 sm:w-20 block" title="獨立調整背景音樂音量" />
+                    </div>
+
+                    <button id="btn-quit" type="button" class="btn-bounce bg-rose-500 hover:bg-rose-600 text-white font-black px-2 sm:px-3 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white flex items-center justify-center h-8 sm:h-10 gap-1 text-xs sm:text-sm whitespace-nowrap" title="提早結算">
+                        <i class="fa-solid fa-flag-checkered text-xs sm:text-sm"></i>
+                        <span class="hidden lg:inline">結算</span>
+                    </button>
+                </div>
+
+                <!-- Center: 5-Question Star Progress Pill -->
+                <div class="hud-pill px-2 py-1 sm:px-4 sm:py-1.5 rounded-full flex items-center justify-center gap-1 sm:gap-2 text-white shadow-lg shrink-0">
+                    <img id="hud-logo-img" src="team_logo.png" alt="DN" class="w-5 h-5 sm:w-7 sm:h-7 rounded-full object-contain bg-slate-950 p-0.5 border border-amber-300 hidden md:block" />
+                    <span class="text-xs font-black text-amber-300 whitespace-nowrap hidden sm:inline">闖關星星</span>
+                    <div id="hud-stars" class="flex items-center gap-0.5 sm:gap-1.5 text-xs sm:text-lg leading-none"></div>
+                </div>
+
+                <!-- Right: Prominent Top-Right Score Pill (Always Inside Screen!) -->
+                <div class="hud-pill px-2 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl flex items-center gap-1 sm:gap-1.5 text-white shrink-0">
+                    <span class="text-sm sm:text-lg leading-none">⭐</span>
+                    <span class="text-xs font-black text-amber-200 hidden sm:inline">分數</span>
+                    <div id="hud-score" class="text-base sm:text-2xl font-black text-amber-300 tabular-nums leading-none">0</div>
+                </div>
+            </div>
+
+            <!-- Row 2: Cute Carnival Question Card (2-Row Full-Width Layout on Mobile for GIANT Question Text!) -->
+            <div id="question-banner-wrapper" class="w-full max-w-2xl mx-auto pointer-events-auto">
+                <div id="question-card" class="carnival-card rounded-[1.5rem] sm:rounded-[2rem] px-3 py-2 sm:px-5 sm:py-3 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 cursor-pointer active:scale-[0.99] transition-transform relative" title="點擊重聽問題語音">
+                    
+                    <!-- Mobile Top Header Row (Mascot + Level Badge + Hint + Replay Button) / Desktop Left Mascot -->
+                    <div class="w-full sm:w-auto flex items-center justify-between sm:justify-center shrink-0 relative">
+                        <div class="flex items-center gap-2">
+                            <img id="hud-mascot-host" src="mascot_front.png" alt="DO NOT 吉祥物" class="w-10 h-10 sm:w-16 sm:h-16 object-contain animate-float-mascot drop-shadow shrink-0" />
+                            <span id="question-badge" class="sm:absolute sm:-top-1.5 sm:-left-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs sm:text-xs font-black px-2.5 py-0.5 rounded-full border-2 border-white shadow whitespace-nowrap leading-tight">
+                                🎈 第 1/5 關
+                            </span>
+                        </div>
+
+                        <!-- Mobile Replay Voice Button (Right side of top bar on phone, hidden on sm+) -->
+                        <button id="btn-replay-voice-mobile" type="button" class="sm:hidden btn-bounce px-2.5 py-1 rounded-xl bg-gradient-to-b from-sky-100 to-sky-200 border-2 border-sky-400 text-sky-800 flex items-center gap-1 shadow-sm" title="重聽題目語音">
+                            <i class="fa-solid fa-volume-high text-xs text-sky-600"></i>
+                            <span class="text-xs font-black leading-none">重聽</span>
+                        </button>
+                    </div>
+
+                    <!-- Center Giant Question Text & Emoji (Spans 100% Full Card Width on Mobile!) -->
+                    <div id="question-center-box" class="w-full sm:flex-1 text-center min-w-0 px-1 flex flex-col items-center justify-center">
+                        <div id="question-title-row" class="inline-flex items-center justify-center gap-1.5 sm:gap-2.5 whitespace-nowrap">
+                            <span id="question-emoji" class="text-3xl sm:text-4xl leading-none drop-shadow-sm shrink-0">🌿</span>
+                            <h2 id="question-text" class="font-black text-slate-900 tracking-tight m-0 leading-tight cute-title-shadow" style="font-size: 32px;">
+                                食大麻朱古力？
+                            </h2>
+                        </div>
+                        <div id="thinking-hint" class="text-xs sm:text-sm font-black text-amber-900 mt-1 flex items-center justify-center gap-1 whitespace-nowrap bg-amber-100/95 px-3 py-0.5 rounded-full border border-amber-300 shadow-sm">
+                            <span>👇 拍下面</span>
+                            <span class="text-emerald-600 font-black">【⭕ 要！】</span>
+                            <span>定</span>
+                            <span class="text-rose-600 font-black">【❌ 不要！】</span>
+                        </div>
+                    </div>
+
+                    <!-- Desktop/Tablet Replay Audio Button (Hidden on phone since phone uses top-right button) -->
+                    <button id="btn-replay-voice" type="button" class="hidden sm:flex btn-bounce shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-b from-sky-100 to-sky-200 hover:from-sky-200 hover:to-sky-300 border-2 border-sky-400 text-sky-800 flex-col items-center justify-center shadow-sm" title="重聽題目語音">
+                        <i class="fa-solid fa-volume-high text-lg leading-none text-sky-600"></i>
+                        <span class="text-[11px] font-black leading-none mt-0.5">重聽</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM SECTION: Giant Cute Jelly 「⭕ 要！」 vs 「❌ 不要！」 Arcade Pads (Full-Width Giant Text on Mobile!) -->
+        <div class="w-full max-w-4xl mx-auto pointer-events-auto px-0.5 sm:px-4">
+            <div class="grid grid-cols-2 gap-2 sm:gap-6 items-stretch">
+                
+                <!-- LEFT BUTTON: ⭕ 要！ (YES) -->
+                <button id="btn-left" type="button" class="btn-3d-yes rounded-[1.5rem] sm:rounded-[2rem] px-2.5 py-2 sm:p-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 text-white relative overflow-hidden group">
+                    <!-- Top Row on Mobile / Left Mascot on Desktop -->
+                    <div class="flex items-center justify-center gap-1.5 sm:shrink-0">
+                        <img id="btn-yes-mascot" src="mascot_yes.png" alt="要" class="w-11 h-11 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain drop-shadow-md group-hover:scale-105 transition-transform shrink-0" />
+                        <div class="sm:hidden text-xs font-black text-emerald-950 bg-emerald-200/95 px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap leading-none shadow-sm">
+                            <i class="fa-solid fa-arrow-left"></i> 左邊跑道
+                        </div>
+                    </div>
+                    <!-- Giant Choice Text Block -->
+                    <div class="text-center sm:text-left flex flex-col justify-center items-center sm:items-start min-w-0 w-full sm:w-auto">
+                        <div class="hidden sm:flex text-xs font-black text-emerald-950 bg-emerald-200/95 px-2.5 py-0.5 rounded-full w-fit items-center gap-1 whitespace-nowrap leading-none mb-1">
+                            <i class="fa-solid fa-arrow-left"></i> 左邊跑道
+                        </div>
+                        <div class="text-[32px] sm:text-4xl md:text-5xl font-black tracking-tight drop-shadow-[0_3px_3px_rgba(0,0,0,0.3)] whitespace-nowrap leading-none my-0.5">
+                            ⭕ 要！
+                        </div>
+                        <div class="text-xs sm:text-sm font-black text-emerald-50 mt-0.5 whitespace-nowrap drop-shadow-sm">
+                            ✨ 正確好行為 👍
+                        </div>
+                    </div>
+                </button>
+
+                <!-- RIGHT BUTTON: ❌ 不要！ (DO NOT) -->
+                <button id="btn-right" type="button" class="btn-3d-no rounded-[1.5rem] sm:rounded-[2rem] px-2.5 py-2 sm:p-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 text-white relative overflow-hidden group">
+                    <!-- Top Row on Mobile (Mascot + Badge) -->
+                    <div class="flex sm:hidden items-center justify-center gap-1.5">
+                        <div class="text-xs font-black text-rose-950 bg-rose-200/95 px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap leading-none shadow-sm">
+                            右邊跑道 <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <img id="btn-no-mascot-mobile" src="mascot_no.png" alt="不要" class="w-11 h-11 object-contain drop-shadow-md shrink-0" />
+                    </div>
+                    <!-- Giant Choice Text Block -->
+                    <div class="text-center sm:text-right flex flex-col justify-center items-center sm:items-end min-w-0 w-full sm:w-auto">
+                        <div class="hidden sm:flex text-xs font-black text-rose-950 bg-rose-200/95 px-2.5 py-0.5 rounded-full w-fit items-center justify-end gap-1 whitespace-nowrap leading-none mb-1">
+                            右邊跑道 <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <div class="text-[32px] sm:text-4xl md:text-5xl font-black tracking-tight drop-shadow-[0_3px_3px_rgba(0,0,0,0.3)] whitespace-nowrap leading-none my-0.5">
+                            ❌ 不要！
+                        </div>
+                        <div class="text-xs sm:text-sm font-black text-amber-200 mt-0.5 whitespace-nowrap drop-shadow-sm">
+                            🚫 遠離毒品 DO NOT
+                        </div>
+                    </div>
+                    <!-- Right Mascot on Desktop/Tablet -->
+                    <img id="btn-no-mascot" src="mascot_no.png" alt="不要" class="hidden sm:block sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain drop-shadow-md group-hover:scale-105 transition-transform shrink-0" />
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- CUTE START SCREEN OVERLAY (Enlarged Mobile Text & Updated Family Text) -->
+    <div id="screen-start" class="absolute inset-0 z-40 flex items-center justify-center p-2.5 sm:p-5 bg-sky-950/55 backdrop-blur-md overflow-y-auto">
+        <div class="carnival-card max-w-xl w-full p-4 sm:p-6 rounded-[2rem] sm:rounded-[2.4rem] text-center relative my-auto">
+            
+            <!-- Team Crest & Mascot Hero Banner -->
+            <div class="flex items-center justify-center gap-2.5 sm:gap-4 mb-2">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-950 border-4 border-amber-400 p-1 shadow-lg flex items-center justify-center shrink-0">
+                    <img id="start-logo-img" src="team_logo.png" alt="DO NOT 隊徽" class="w-full h-full object-contain rounded-full" />
+                </div>
+                <div class="text-left min-w-0">
+                    <div class="inline-block bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full border border-amber-500 shadow-sm mb-0.5 whitespace-nowrap">
+                        🎪 西九龍禁毒嘉年華 ‧ 攤位遊戲
+                    </div>
+                    <div class="text-xs sm:text-sm font-black text-sky-900 truncate">第五屆禁毒領袖學院</div>
+                    <div class="text-xs sm:text-sm font-black text-rose-600 truncate">天主教新民書院 DO NOT 隊伍</div>
+                </div>
+                <img id="start-mascot-img" src="mascot_front.png" alt="吉祥物" class="w-16 h-16 sm:w-20 sm:h-20 object-contain animate-float-mascot drop-shadow-lg shrink-0" />
+            </div>
+
+            <h1 id="start-main-title" class="text-2xl sm:text-4xl font-black text-slate-900 mb-1.5 tracking-tight cute-title-shadow">
+                🌈 無毒青春：跑道大冒險
+            </h1>
+            <div class="inline-block bg-rose-100 border-2 border-rose-300 text-rose-600 text-xs sm:text-sm px-3.5 py-1 rounded-full mb-3 font-black">
+                🔥 一齊向毒品大聲講「DO NOT！」 🔥
+            </div>
+
+            <!-- Kid-Friendly Visual Instructions (⭕ 要 vs ❌ 不要) -->
+            <div class="grid grid-cols-2 gap-2.5 sm:gap-3 mb-3 text-left">
+                <div class="bg-gradient-to-b from-emerald-50 to-emerald-100/80 border-emerald-400 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 shadow-sm" style="border-width: 3px;">
+                    <img id="rule-yes-img" src="mascot_yes.png" alt="要" class="w-11 h-11 sm:w-14 sm:h-14 object-contain shrink-0 drop-shadow" />
+                    <div class="min-w-0">
+                        <div class="text-sm sm:text-base font-black text-emerald-800">左邊：⭕ 要！</div>
+                        <div class="text-xs sm:text-xs font-bold text-slate-700 leading-snug mt-0.5">搵家人幫手、見毒品報警、保護自己！</div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-b from-rose-50 to-rose-100/80 border-rose-400 rounded-2xl p-2.5 sm:p-3 flex items-center gap-2 shadow-sm" style="border-width: 3px;">
+                    <img id="rule-no-img" src="mascot_no.png" alt="不要" class="w-11 h-11 sm:w-14 sm:h-14 object-contain shrink-0 drop-shadow" />
+                    <div class="min-w-0">
+                        <div class="text-sm sm:text-base font-black text-rose-800">右邊：❌ 不要！</div>
+                        <div class="text-xs sm:text-xs font-bold text-slate-700 leading-snug mt-0.5">大麻朱古力、亂飲咳藥水、試食毒品！</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cute Random Star (+300) OR Drug (-300) Rule Pill -->
+            <div class="bg-gradient-to-r from-amber-50 via-yellow-50 to-rose-50 rounded-2xl px-3 py-2 mb-2.5 border-2 border-amber-300 flex items-center justify-around gap-2 text-xs sm:text-sm font-black text-slate-800 shadow-inner">
+                <div class="flex items-center gap-1.5 text-amber-700">
+                    <span class="text-base sm:text-xl">⭐</span>
+                    <span>執到星星 <b class="text-emerald-600">+300分</b></span>
+                </div>
+                <div class="h-4 w-0.5 bg-amber-300"></div>
+                <div class="flex items-center gap-1.5 text-rose-700">
+                    <span class="text-base sm:text-xl">☠️</span>
+                    <span>避開毒品 <b class="text-rose-600">-300分</b></span>
+                </div>
+            </div>
+
+            <!-- Independent Background Music (bgm.mp3) Volume Slider on Start Screen -->
+            <div class="bg-sky-50 border-2 border-sky-300 rounded-2xl px-3.5 py-2 mb-2.5 flex items-center justify-between gap-2 text-xs sm:text-sm">
+                <div class="flex items-center gap-1.5 font-black text-sky-900 shrink-0">
+                    <i class="fa-solid fa-music text-amber-500"></i>
+                    <span>背景音樂音量：</span>
+                </div>
+                <div class="flex items-center gap-2 flex-1 max-w-[190px]">
+                    <input id="slider-bgm-start" type="range" min="0" max="100" value="35" class="bgm-slider w-full" />
+                    <span id="label-bgm-vol" class="font-black text-sky-800 w-9 text-right tabular-nums">35%</span>
+                </div>
+            </div>
+
+            <!-- Official Police Anti-Drug Notice -->
+            <div class="bg-slate-900 text-white border-2 border-amber-400 p-2.5 sm:p-3 rounded-2xl text-left mb-3 text-xs leading-relaxed">
+                <div class="font-black text-amber-300 flex items-center gap-1.5 mb-0.5">
+                    <i class="fa-solid fa-bullhorn text-amber-400"></i> 重要禁毒訊息：
+                </div>
+                <p class="text-slate-100 font-bold">
+                    毒品害人，切勿接觸！請挺身而出，舉報毒品罪行。<br>
+                    📞 警察毒品舉報熱線：<span class="text-amber-300 underline">2527-1234</span> ｜ 依托咪酯舉報熱線：<span class="text-amber-300 underline">6629-2966</span>
+                </p>
+            </div>
+
+            <button id="btn-start" type="button" class="btn-jelly-action w-full py-3.5 sm:py-4 text-white font-black text-xl sm:text-2xl rounded-2xl flex items-center justify-center gap-2.5 mb-2">
+                <i class="fa-solid fa-rocket"></i>
+                <span>開始 5 關大冒險！</span>
+            </button>
+
+            <button id="btn-show-disclaimer" type="button" class="text-xs font-bold text-slate-500 hover:text-slate-800 underline flex items-center justify-center gap-1 mx-auto py-0.5">
+                <i class="fa-solid fa-scale-balanced"></i> 遊戲開發 AI 技術免責聲明
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Disclaimer Modal -->
+    <div id="modal-disclaimer" class="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md hidden overflow-y-auto">
+        <div class="carnival-card max-w-lg w-full p-4 sm:p-6 rounded-3xl text-left relative my-auto max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between pb-2 border-b-2 border-amber-300">
+                <div class="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-robot text-amber-500"></i>
+                    <span>遊戲開發採用 AI 技術之免責聲明</span>
+                </div>
+                <button id="btn-close-disclaimer" type="button" class="text-slate-500 hover:text-slate-900 text-xl p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto py-3 space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed pr-1 font-bold">
+                <p class="text-slate-900">
+                    本遊戲在開發與製作過程中，部分或全部資產（包括但不限於：遊戲美術、腳本文案、音樂音效、程式代碼等）採用了人工智慧（AI）技術輔助生成。當您開始下載、安裝或使用本遊戲時，即視為您已理解並同意以下條款：
+                </p>
+                <div class="space-y-1">
+                    <b class="text-amber-700">1. 知識產權（版權）與商業授權聲明</b>
+                    <p>本遊戲所使用的 AI 生成素材，均已在開發階段通過合法渠道與技術工具進行生成與篩選。素材之版權與使用權歸本開發團隊所有，或已取得相關 AI 工具供應商之合法商業授權。用戶不得以「AI 生成內容不受版權保護」為由，未經授權惡意私自抓取、反編譯、複製、修改或將本遊戲之任何資產用於其他商業用途。</p>
+                </div>
+                <div class="space-y-1">
+                    <b class="text-amber-700">2. 禁止利用本遊戲擾亂社會秩序（核心規範）</b>
+                    <p>本遊戲內容均為教育宣導與虛構設計，不代表任何真實事件。嚴禁任何用戶利用、修改、傳播本遊戲之任何畫面、文案或衍生內容，從事任何擾亂社會秩序、危害公共安全、破壞社會穩定或違反所在地法律法規之行為。禁止將遊戲素材用於惡意造謠、散布假訊息、政治煽動或進行任何非法宣傳。若因不當傳播而觸犯法律，一切法律責任由用戶本人自行承擔。</p>
+                </div>
+                <div class="space-y-1">
+                    <b class="text-amber-700">3. 技術與內容局限性免責</b>
+                    <p>由於部分素材由 AI 輔助生成，遊戲內可能存在某些美術風格不一致、邏輯或文本細節未臻完美之處。本團隊不保證遊戲內容完全符合所有用戶的主觀審美或預期。遊戲以「現狀」提供，本團隊不對因遊戲內容產生的任何觀感不適承擔任何法律責任。</p>
+                </div>
+                <div class="space-y-1">
+                    <b class="text-amber-700">4. 處置與修訂權</b>
+                    <p>若發現用戶違反本聲明或利用本遊戲進行不法活動，官方有權立即封禁並追究法律責任。本團隊保留隨時修訂本聲明的權利，修訂後自公布時起生效。</p>
+                </div>
+            </div>
+
+            <button id="btn-ack-disclaimer" type="button" class="btn-bounce w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-sm mt-2 border-2 border-amber-500">
+                我已閱讀並知悉
+            </button>
+        </div>
+    </div>
+
+    <!-- Cute Pause Screen -->
+    <div id="screen-pause" class="absolute inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md hidden">
+        <div class="carnival-card max-w-sm w-full p-5 sm:p-6 rounded-[2.2rem] text-center">
+            <img id="pause-mascot-img" src="mascot_front.png" alt="吉祥物" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-2 object-contain animate-float-mascot" />
+            <h2 class="text-2xl font-black text-slate-900 mb-1">⏸️ 休息一下</h2>
+            <p class="text-rose-600 text-sm sm:text-base mb-4 font-black">天主教新民書院 DO NOT 隊伍：「向毒品講 DO NOT！」</p>
+
+            <!-- BGM Volume Slider inside Pause Modal -->
+            <div class="bg-sky-50 border-2 border-sky-300 rounded-2xl p-3 mb-4 text-left">
+                <div class="flex items-center justify-between text-xs sm:text-sm font-black text-sky-900 mb-1.5">
+                    <span><i class="fa-solid fa-music text-amber-500 mr-1"></i> 背景音樂音量</span>
+                    <span id="label-bgm-pause">35%</span>
+                </div>
+                <input id="slider-bgm-pause" type="range" min="0" max="100" value="35" class="bgm-slider w-full" />
+            </div>
+
+            <div class="space-y-3">
+                <button id="btn-resume" type="button" class="btn-jelly-action w-full py-3.5 text-white font-black rounded-2xl flex items-center justify-center gap-2 text-lg">
+                    <i class="fa-solid fa-play"></i> 繼續冒險
+                </button>
+                <button id="btn-restart-pause" type="button" class="btn-bounce w-full py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-2xl border-2 border-amber-500 flex items-center justify-center gap-2 text-base">
+                    <i class="fa-solid fa-rotate-right"></i> 重新開始（下一位）
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPER CUTE KID-FRIENDLY CELEBRATION RESULT SCREEN -->
+    <div id="screen-gameover" class="absolute inset-0 z-40 flex items-center justify-center p-2.5 sm:p-4 bg-sky-950/70 backdrop-blur-lg hidden overflow-y-auto">
+        <div class="carnival-card max-w-md w-full p-4 sm:p-6 rounded-[2.2rem] text-center relative my-auto overflow-hidden">
+            
+            <!-- Cute Rainbow Top Ribbon -->
+            <div id="result-badge" class="inline-block px-4 py-1 rounded-full text-xs sm:text-sm font-black bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-slate-950 border-2 border-white shadow-md mb-1.5">
+                👑 超級無毒小狀元
+            </div>
+
+            <!-- Animated 5-Star Celebration Bar -->
+            <div id="result-star-ribbon" class="flex items-center justify-center gap-1.5 sm:gap-2 my-1 min-h-[36px]">
+                <!-- Populated dynamically with bouncing stars -->
+            </div>
+
+            <!-- Mascot & Praise Title -->
+            <div class="flex items-center justify-center gap-3 my-1.5">
+                <img id="result-mascot-img" src="mascot_yes.png" alt="吉祥物" class="w-20 h-20 sm:w-24 sm:h-24 object-contain animate-float-mascot drop-shadow-xl shrink-0" />
+                <div class="text-left min-w-0">
+                    <h2 id="result-title" class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight cute-title-shadow">
+                        🎉 5 關全中！
+                    </h2>
+                    <p id="result-subtitle" class="text-slate-700 text-sm sm:text-base mt-1 font-black leading-snug">
+                        好叻呀！一齊向毒品大聲講「DO NOT！」
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cute Pastel Sticker Stats Grid (4 Kid-Friendly Cards) -->
+            <div class="grid grid-cols-2 gap-2 sm:gap-2.5 my-3 text-center">
+                <!-- Card 1: Correct Gates -->
+                <div class="p-2.5 bg-gradient-to-b from-emerald-50 to-emerald-100/90 rounded-2xl border-2 border-emerald-300 shadow-sm flex flex-col items-center justify-center">
+                    <div class="text-xs text-emerald-800 font-black mb-0.5 flex items-center gap-1">
+                        <span>🎯</span> <span>答啱題目</span>
+                    </div>
+                    <div id="final-gates" class="text-xl sm:text-2xl font-black text-emerald-600 leading-tight">5 / 5 題</div>
+                </div>
+
+                <!-- Card 2: Total Score -->
+                <div class="p-2.5 bg-gradient-to-b from-amber-50 to-yellow-100/90 rounded-2xl border-2 border-amber-300 shadow-sm flex flex-col items-center justify-center">
+                    <div class="text-xs text-amber-900 font-black mb-0.5 flex items-center gap-1">
+                        <span>🏆</span> <span>今次總分</span>
+                    </div>
+                    <div id="final-score" class="text-xl sm:text-2xl font-black text-amber-600 tabular-nums leading-tight">0</div>
+                </div>
+
+                <!-- Card 3: Stars & Drugs -->
+                <div class="p-2.5 bg-gradient-to-b from-purple-50 to-pink-100/80 rounded-2xl border-2 border-purple-300 shadow-sm flex flex-col items-center justify-center">
+                    <div class="text-xs text-purple-900 font-black mb-0.5 flex items-center gap-1">
+                        <span>✨</span> <span>跑道表現</span>
+                    </div>
+                    <div id="final-items" class="text-sm font-black text-purple-700 leading-tight mt-0.5">⭐ 0 粒 ｜ ☠️ 0 次</div>
+                </div>
+
+                <!-- Card 4: Best Record -->
+                <div class="p-2.5 bg-gradient-to-b from-sky-50 to-sky-100/90 rounded-2xl border-2 border-sky-300 shadow-sm flex flex-col items-center justify-center">
+                    <div class="text-xs text-sky-900 font-black mb-0.5 flex items-center gap-1">
+                        <span>👑</span> <span>最高紀錄</span>
+                    </div>
+                    <div id="best-score" class="text-xl sm:text-2xl font-black text-sky-600 tabular-nums leading-tight">0</div>
+                </div>
+            </div>
+
+            <!-- Team Credit & Hotline Compact Box with Official Team Logo -->
+            <div class="bg-slate-900 text-white rounded-2xl p-2.5 sm:p-3 mb-3 text-left border-2 border-amber-400 text-xs leading-relaxed shadow-md">
+                <div class="flex items-center gap-2 mb-1 pb-1 border-b border-slate-700">
+                    <img id="result-logo-img" src="team_logo.png" alt="DN" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-contain bg-slate-950 border border-amber-400 shrink-0" />
+                    <span class="font-black text-amber-300 text-xs truncate">天主教新民書院 ‧ 第五屆禁毒領袖學院 DO NOT 隊伍</span>
+                </div>
+                <div class="text-slate-200 font-bold">
+                    📞 警察毒品舉報熱線：<span class="text-amber-300">2527-1234</span> ｜ 依托咪酯舉報：<span class="text-amber-300">6629-2966</span>
+                </div>
+            </div>
+
+            <!-- 1-Click Instant Next Player Button -->
+            <div class="flex flex-col sm:flex-row gap-2">
+                <button id="btn-next-player" type="button" class="btn-jelly-action flex-1 py-3.5 text-white font-black text-lg sm:text-xl rounded-2xl flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rocket"></i> 下一位小朋友（即刻出發！）
+                </button>
+                <button id="btn-replay" type="button" class="btn-bounce sm:w-24 py-3 bg-amber-100 hover:bg-amber-200 text-slate-800 font-black text-sm rounded-2xl border-2 border-amber-400 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-house"></i> 主頁
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External PNG File Paths for GitHub Hosting -->
+    <script>
+        const MASCOT_ASSETS = {
+            back: "mascot_back.png",
+            front: "mascot_front.png",
+            no: "mascot_no.png",
+            yes: "mascot_yes.png",
+            logo: "team_logo.png"
+        };
+    </script>
+
+    <!-- Celebration Confetti Shower Engine for Cute Result Screen -->
+    <script>
+        class ConfettiCelebration {
+            constructor() {
+                this.canvas = document.getElementById('confetti-canvas');
+                this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+                this.particles = [];
+                this.active = false;
+                this.rafId = null;
+                this.colors = ['#facc15', '#34d399', '#fb7185', '#38bdf8', '#c084fc', '#fb923c'];
+            }
+
+            start() {
+                if (!this.canvas || !this.ctx) return;
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.canvas.classList.remove('hidden');
+                this.active = true;
+                this.particles = [];
+
+                for (let i = 0; i < 85; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * -this.canvas.height,
+                        size: 7 + Math.random() * 8,
+                        speedY: 2.2 + Math.random() * 3.5,
+                        speedX: (Math.random() - 0.5) * 2.5,
+                        color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                        angle: Math.random() * Math.PI * 2,
+                        spin: (Math.random() - 0.5) * 0.15,
+                        isCircle: Math.random() > 0.5
+                    });
+                }
+
+                if (this.rafId) cancelAnimationFrame(this.rafId);
+                this.loop();
+            }
+
+            stop() {
+                this.active = false;
+                if (this.rafId) {
+                    cancelAnimationFrame(this.rafId);
+                    this.rafId = null;
+                }
+                if (this.canvas) {
+                    this.canvas.classList.add('hidden');
+                }
+            }
+
+            loop() {
+                if (!this.active || !this.ctx || !this.canvas) return;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX + Math.sin(p.y * 0.02) * 0.6;
+                    p.angle += p.spin;
+
+                    if (p.y > this.canvas.height + 20) {
+                        p.y = -15;
+                        p.x = Math.random() * this.canvas.width;
+                    }
+
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate(p.angle);
+                    this.ctx.fillStyle = p.color;
+                    if (p.isCircle) {
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, p.size * 0.5, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    } else {
+                        this.ctx.fillRect(-p.size * 0.5, -p.size * 0.35, p.size, p.size * 0.7);
+                    }
+                    this.ctx.restore();
+                });
+
+                this.rafId = requestAnimationFrame(() => this.loop());
+            }
+        }
+        let confettiFx = null;
+    </script>
+
+    <!-- Custom MP3 Voice Engine + Web Audio API Mobile Volume Fix + BGM Auto-Ducking -->
+    <script>
+        /**
+         * SoundAndVoiceFX (v8 Mobile & iOS Safari Enhanced)
+         * Solves two major mobile browser limitations:
+         * 1. On iOS/iPadOS Safari, HTMLAudioElement.volume is strictly read-only (always 1.0).
+         *    By routing BGM and Voice through Web Audio API GainNodes (with decoded AudioBuffers
+         *    and MediaElementAudioSourceNode fallback), the volume slider (0%-100%) and Auto-Ducking
+         *    work 100% natively on iPhones, iPads, Androids, and Desktops!
+         * 2. On iOS Safari, non-gesture-triggered audio on Gates 2-5 (inside setTimeout) is never
+         *    blocked because the shared Web Audio API context & single fallback Audio element are unlocked
+         *    on the first button tap.
+         */
+        class SoundAndVoiceFX {
+            constructor() {
+                this.ctx = null;
+                this.bgmGainNode = null;
+                this.voiceGainNode = null;
+                this.voiceEnabled = true;
+
+                const savedVol = parseFloat(localStorage.getItem('antidrug_bgm_volume'));
+                this.bgmUserVolume = Number.isFinite(savedVol) ? Math.max(0, Math.min(1, savedVol)) : 0.35;
+                this.bgmMuted = false;
+                this.isDucking = false;
+                this.wantsBgmPlaying = false;
+
+                // Web Audio API Buffer state for BGM (Primary on GitHub Pages / HTTPS)
+                this.bgmRawBuffer = null;
+                this.bgmDecodedBuffer = null;
+                this.bgmBufferSource = null;
+                this.bgmIsPlayingBuffer = false;
+
+                // HTML5 Audio fallback (in case opened via local file:// protocol)
+                this.bgmAudio = new Audio('bgm.mp3');
+                this.bgmAudio.loop = true;
+                this.bgmAudio.preload = 'auto';
+                this.bgmMediaSourceLinked = false;
+
+                // Question Voice buffers & single shared HTML5 Audio fallback
+                this.questionRawBuffers = {};
+                this.questionDecodedBuffers = {};
+                this.currentVoiceSource = null;
+                this.sharedVoiceAudio = new Audio();
+                this.sharedVoiceAudio.preload = 'auto';
+                this.voiceMediaSourceLinked = false;
+                this.duckRestoreTimer = null;
+
+                this.preloadAudioAssets();
+                this.updateBgmEffectiveVolume();
+            }
+
+            preloadAudioAssets() {
+                // Pre-fetch BGM as ArrayBuffer for Web Audio API GainNode control on iOS/Android
+                fetch('bgm.mp3')
+                    .then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+                    .then(buf => {
+                        this.bgmRawBuffer = buf;
+                        if (this.ctx) this.decodeBgmIfNeeded();
+                    })
+                    .catch(() => {
+                        // Fallback to HTML5 Audio element if fetch is blocked (e.g. file://)
+                    });
+
+                // Pre-fetch q1.mp3 ~ q8.mp3 as ArrayBuffers so Gates 2-5 never get blocked on iOS
+                for (let i = 1; i <= 8; i++) {
+                    const file = `q${i}.mp3`;
+                    fetch(file)
+                        .then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+                        .then(buf => {
+                            this.questionRawBuffers[file] = buf;
+                            if (this.ctx) this.decodeQuestionFile(file);
+                        })
+                        .catch(() => {});
+                }
+            }
+
+            initAudio() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+
+                    this.bgmGainNode = this.ctx.createGain();
+                    this.bgmGainNode.connect(this.ctx.destination);
+
+                    this.voiceGainNode = this.ctx.createGain();
+                    this.voiceGainNode.gain.value = 1.0;
+                    this.voiceGainNode.connect(this.ctx.destination);
+
+                    // Link HTML5 fallback elements to Web Audio GainNodes if permissible
+                    try {
+                        if (!this.bgmMediaSourceLinked && window.location.protocol !== 'file:') {
+                            const mediaSource = this.ctx.createMediaElementSource(this.bgmAudio);
+                            mediaSource.connect(this.bgmGainNode);
+                            this.bgmMediaSourceLinked = true;
+                        }
+                    } catch (e) {}
+
+                    try {
+                        if (!this.voiceMediaSourceLinked && window.location.protocol !== 'file:') {
+                            const voiceMediaSource = this.ctx.createMediaElementSource(this.sharedVoiceAudio);
+                            voiceMediaSource.connect(this.voiceGainNode);
+                            this.voiceMediaSourceLinked = true;
+                        }
+                    } catch (e) {}
+
+                    this.updateBgmEffectiveVolume();
+                    this.decodeBgmIfNeeded();
+                    Object.keys(this.questionRawBuffers).forEach(file => this.decodeQuestionFile(file));
+                }
+
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            decodeBgmIfNeeded() {
+                if (!this.ctx || !this.bgmRawBuffer || this.bgmDecodedBuffer || this.bgmDecoding) return;
+                this.bgmDecoding = true;
+                const copyBuf = this.bgmRawBuffer.slice(0);
+                this.ctx.decodeAudioData(
+                    copyBuf,
+                    (decoded) => {
+                        this.bgmDecodedBuffer = decoded;
+                        this.bgmDecoding = false;
+                        if (this.wantsBgmPlaying) {
+                            // Switch seamlessly from fallback audio element to Web Audio buffer
+                            if (!this.bgmAudio.paused) {
+                                try { this.bgmAudio.pause(); } catch (e) {}
+                            }
+                            this.startBgmBufferLoop();
+                        }
+                    },
+                    () => {
+                        this.bgmDecoding = false;
+                    }
+                );
+            }
+
+            decodeQuestionFile(file) {
+                if (!this.ctx || !this.questionRawBuffers[file] || this.questionDecodedBuffers[file]) return;
+                const copyBuf = this.questionRawBuffers[file].slice(0);
+                this.ctx.decodeAudioData(
+                    copyBuf,
+                    (decoded) => {
+                        this.questionDecodedBuffers[file] = decoded;
+                    },
+                    () => {}
+                );
+            }
+
+            startBgmBufferLoop() {
+                if (!this.ctx || !this.bgmDecodedBuffer) return;
+                this.stopBgmBufferLoop();
+                try {
+                    const source = this.ctx.createBufferSource();
+                    source.buffer = this.bgmDecodedBuffer;
+                    source.loop = true;
+                    source.connect(this.bgmGainNode);
+                    source.start(0);
+                    this.bgmBufferSource = source;
+                    this.bgmIsPlayingBuffer = true;
+                } catch (e) {}
+            }
+
+            stopBgmBufferLoop() {
+                if (this.bgmBufferSource) {
+                    try {
+                        this.bgmBufferSource.stop(0);
+                        this.bgmBufferSource.disconnect();
+                    } catch (e) {}
+                    this.bgmBufferSource = null;
+                }
+                this.bgmIsPlayingBuffer = false;
+            }
+
+            startBGM() {
+                this.initAudio();
+                this.wantsBgmPlaying = true;
+                this.updateBgmEffectiveVolume();
+
+                if (this.bgmDecodedBuffer) {
+                    if (!this.bgmIsPlayingBuffer) {
+                        this.startBgmBufferLoop();
+                    }
+                } else {
+                    if (this.bgmAudio.paused && !this.bgmMuted && this.bgmUserVolume > 0) {
+                        this.bgmAudio.play().catch(() => {});
+                    }
+                }
+            }
+
+            pauseBGM() {
+                this.wantsBgmPlaying = false;
+                this.stopBgmBufferLoop();
+                if (!this.bgmAudio.paused) {
+                    try { this.bgmAudio.pause(); } catch (e) {}
+                }
+            }
+
+            setBgmUserVolume(vol0to1) {
+                this.initAudio();
+                this.bgmUserVolume = Math.max(0, Math.min(1, vol0to1));
+                localStorage.setItem('antidrug_bgm_volume', this.bgmUserVolume.toString());
+
+                if (this.bgmUserVolume > 0) {
+                    this.bgmMuted = false;
+                    if (isPlaying && !isPaused && !this.wantsBgmPlaying) {
+                        this.startBGM();
+                    } else if (this.wantsBgmPlaying && !this.bgmIsPlayingBuffer && this.bgmAudio.paused) {
+                        this.startBGM();
+                    }
+                }
+                this.updateBgmEffectiveVolume();
+            }
+
+            toggleBgmMute() {
+                this.initAudio();
+                this.bgmMuted = !this.bgmMuted;
+                this.updateBgmEffectiveVolume();
+                if (!this.bgmMuted && isPlaying && !isPaused) {
+                    this.startBGM();
+                }
+                return this.bgmMuted;
+            }
+
+            updateBgmEffectiveVolume() {
+                const duckFactor = this.isDucking ? 0.18 : 1.0;
+                const effectiveVol = (this.bgmMuted || this.bgmUserVolume <= 0)
+                    ? 0
+                    : Math.max(0, Math.min(1, this.bgmUserVolume * duckFactor));
+
+                // 1. Update Web Audio API GainNode (Works on 100% of iOS, iPadOS, Android & Desktop)
+                if (this.ctx && this.bgmGainNode) {
+                    try {
+                        this.bgmGainNode.gain.setTargetAtTime(effectiveVol, this.ctx.currentTime, 0.03);
+                    } catch (e) {
+                        this.bgmGainNode.gain.value = effectiveVol;
+                    }
+                }
+
+                // 2. Also update HTML5 Audio fallback for non-routed environments
+                if (!this.bgmMediaSourceLinked) {
+                    try {
+                        this.bgmAudio.volume = effectiveVol;
+                        this.bgmAudio.muted = (effectiveVol === 0);
+                    } catch (e) {}
+                } else {
+                    try {
+                        this.bgmAudio.muted = (effectiveVol === 0);
+                    } catch (e) {}
+                }
+            }
+
+            stopQuestionVoice() {
+                if (this.duckRestoreTimer) {
+                    clearTimeout(this.duckRestoreTimer);
+                    this.duckRestoreTimer = null;
+                }
+                if (this.currentVoiceSource) {
+                    try {
+                        this.currentVoiceSource.onended = null;
+                        this.currentVoiceSource.stop(0);
+                        this.currentVoiceSource.disconnect();
+                    } catch (e) {}
+                    this.currentVoiceSource = null;
+                }
+                if (this.sharedVoiceAudio) {
+                    try {
+                        this.sharedVoiceAudio.onended = null;
+                        this.sharedVoiceAudio.onerror = null;
+                        this.sharedVoiceAudio.pause();
+                        this.sharedVoiceAudio.currentTime = 0;
+                    } catch (e) {}
+                }
+                this.isDucking = false;
+                this.updateBgmEffectiveVolume();
+            }
+
+            playQuestionMP3(audioFile) {
+                if (!this.voiceEnabled || !audioFile) return;
+
+                this.initAudio();
+                this.stopQuestionVoice();
+
+                this.isDucking = true;
+                this.updateBgmEffectiveVolume();
+
+                const restoreBgm = () => {
+                    if (this.duckRestoreTimer) {
+                        clearTimeout(this.duckRestoreTimer);
+                        this.duckRestoreTimer = null;
+                    }
+                    this.isDucking = false;
+                    this.updateBgmEffectiveVolume();
+                };
+
+                // Prefer decoded Web Audio API buffer (Never blocked on iOS Safari Gates 2-5!)
+                if (this.ctx && this.questionDecodedBuffers[audioFile]) {
+                    try {
+                        const source = this.ctx.createBufferSource();
+                        source.buffer = this.questionDecodedBuffers[audioFile];
+                        source.connect(this.voiceGainNode);
+                        source.onended = restoreBgm;
+                        this.currentVoiceSource = source;
+                        source.start(0);
+                        const durMs = Math.ceil((this.questionDecodedBuffers[audioFile].duration || 4) * 1000) + 400;
+                        this.duckRestoreTimer = setTimeout(restoreBgm, durMs);
+                        return;
+                    } catch (e) {
+                        restoreBgm();
+                    }
+                }
+
+                // Fallback to shared single HTMLAudioElement
+                try {
+                    this.sharedVoiceAudio.src = audioFile;
+                    this.sharedVoiceAudio.volume = 1.0;
+                    this.sharedVoiceAudio.currentTime = 0;
+                    this.sharedVoiceAudio.onended = restoreBgm;
+                    this.sharedVoiceAudio.onerror = restoreBgm;
+
+                    const playPromise = this.sharedVoiceAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            this.duckRestoreTimer = setTimeout(restoreBgm, 5000);
+                        }).catch(() => {
+                            restoreBgm();
+                        });
+                    }
+                } catch (e) {
+                    restoreBgm();
+                }
+            }
+
+            playLaneSwitch() {
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(460, now);
+                osc.frequency.exponentialRampToValueAtTime(720, now + 0.08);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
+
+            playGatePositive() {
+                this.initAudio();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [
+                    { freq: 523.25, delay: 0.00, dur: 0.22 },
+                    { freq: 659.25, delay: 0.08, dur: 0.22 },
+                    { freq: 783.99, delay: 0.16, dur: 0.25 },
+                    { freq: 1046.50, delay: 0.24, dur: 0.45 }
+                ];
+                notes.forEach(n => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(n.freq, now + n.delay);
+                    gain.gain.setValueAtTime(0.42, now + n.delay);
+                    gain.gain.exponentialRampToValueAtTime(0.008, now + n.delay + n.dur);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + n.delay);
+                    osc.stop(now + n.delay + n.dur);
+
+                    const osc2 = this.ctx.createOscillator();
+                    const gain2 = this.ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(n.freq * 2, now + n.delay);
+                    gain2.gain.setValueAtTime(0.16, now + n.delay);
+                    gain2.gain.exponentialRampToValueAtTime(0.005, now + n.delay + n.dur * 0.8);
+                    osc2.connect(gain2);
+                    gain2.connect(this.ctx.destination);
+                    osc2.start(now + n.delay);
+                    osc2.stop(now + n.delay + n.dur * 0.8);
+                });
+            }
+
+            playGateNegative() {
+                this.initAudio();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const pulses = [
+                    { freq1: 196.00, freq2: 185.00, start: 0.00, dur: 0.20 },
+                    { freq1: 146.83, freq2: 138.59, start: 0.23, dur: 0.36 }
+                ];
+                pulses.forEach(p => {
+                    [p.freq1, p.freq2].forEach(freq => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(freq, now + p.start);
+                        gain.gain.setValueAtTime(0.28, now + p.start);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + p.start + p.dur);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now + p.start);
+                        osc.stop(now + p.start + p.dur);
+                    });
+                });
+            }
+
+            playStarCollect() {
+                this.initAudio();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, now);
+                osc.frequency.setValueAtTime(1318.51, now + 0.07);
+                osc.frequency.setValueAtTime(1567.98, now + 0.14);
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.28);
+            }
+
+            playDrugHit() {
+                this.initAudio();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(260, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.32);
+                gain.gain.setValueAtTime(0.32, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.32);
+            }
+
+            playVictory() {
+                this.initAudio();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                    gain.gain.setValueAtTime(0.32, now + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.09 + 0.28);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.09);
+                    osc.stop(now + idx * 0.09 + 0.28);
+                });
+            }
+        }
+        const soundFx = new SoundAndVoiceFX();
+    </script>
+
+    <!-- Curated 8-Question Bank (4 ❌ 不要 + 4 ⭕ 要) with "爸媽" Updated to "家人" & Safe Single-Codepoint Emoji -->
+    <script>
+        const kidQuestionBank = [
+            // ================= ❌ 不要 (Right Gate) =================
+            {
+                id: 1,
+                audioFile: "q1.mp3",
+                emoji: "🌿",
+                prompt: "食大麻朱古力？",
+                ttsScript: "食大麻朱古力，要定唔要？",
+                answerIsYes: false,
+                fact: "大麻係毒品，食咗會傷腦又犯法！"
+            },
+            {
+                id: 2,
+                audioFile: "q2.mp3",
+                emoji: "💊",
+                prompt: "試食一粒毒品？",
+                ttsScript: "試食一粒毒品，要定唔要？",
+                answerIsYes: false,
+                fact: "毒品一粒都唔好試，食咗好傷身！"
+            },
+            {
+                id: 3,
+                audioFile: "q3.mp3",
+                emoji: "🤫",
+                prompt: "幫人收埋毒品？",
+                ttsScript: "幫人收埋毒品，要定唔要？",
+                answerIsYes: false,
+                fact: "收埋毒品係犯法，要即刻話俾老師知！"
+            },
+            {
+                id: 4,
+                audioFile: "q4.mp3",
+                emoji: "🧪",
+                prompt: "亂飲止咳藥水？",
+                ttsScript: "自己亂飲止咳藥水，要定唔要？",
+                answerIsYes: false,
+                fact: "亂飲藥水好危險，生病要睇醫生！"
+            },
+
+            // ================= ⭕ 要 (Left Gate) =================
+            {
+                id: 5,
+                audioFile: "q5.mp3",
+                emoji: "🏠",
+                prompt: "有事搵家人幫？",
+                ttsScript: "有事搵家人幫手，要定唔要？",
+                answerIsYes: true,
+                fact: "家人同老師最錫你，有事記得搵佢哋！"
+            },
+            {
+                id: 6,
+                audioFile: "q6.mp3",
+                emoji: "🙋",
+                prompt: "見到毒品報警？",
+                ttsScript: "見到毒品即刻報警，要定唔要？",
+                answerIsYes: true,
+                fact: "做得好！見到毒品要話俾老師同警察知！"
+            },
+            {
+                id: 7,
+                audioFile: "q7.mp3",
+                emoji: "👀",
+                prompt: "食嘢前睇清楚？",
+                ttsScript: "食嘢之前睇清楚，要定唔要？",
+                answerIsYes: true,
+                fact: "好習慣！食零食前睇清楚，唔怕誤食毒品！"
+            },
+            {
+                id: 8,
+                audioFile: "q8.mp3",
+                emoji: "❤️",
+                prompt: "好好保護自己？",
+                ttsScript: "好好保護自己身體，要定唔要？",
+                answerIsYes: true,
+                fact: "做得好！愛護自己身體，遠離所有毒品！"
+            }
+        ];
+
+        function buildFiveQuestionSession() {
+            const noPool = kidQuestionBank.filter(q => !q.answerIsYes).sort(() => Math.random() - 0.5);
+            const yesPool = kidQuestionBank.filter(q => q.answerIsYes).sort(() => Math.random() - 0.5);
+
+            const selected = [...noPool.slice(0, 3), ...yesPool.slice(0, 2)];
+
+            for (let attempt = 0; attempt < 20; attempt++) {
+                selected.sort(() => Math.random() - 0.5);
+                let maxStreak = 1, curStreak = 1;
+                for (let i = 1; i < selected.length; i++) {
+                    if (selected[i].answerIsYes === selected[i - 1].answerIsYes) {
+                        curStreak++;
+                        if (curStreak > maxStreak) maxStreak = curStreak;
+                    } else {
+                        curStreak = 1;
+                    }
+                }
+                if (maxStreak <= 2) break;
+            }
+            return selected;
+        }
+    </script>
+
+    <!-- Core 3D Carnival World & Safari/Mobile Pixel-Perfect Rendering Engine -->
+    <script>
+        const TOTAL_QUESTIONS = 5;
+        const BASE_GAME_SPEED = 0.118;
+        const GATE_SPACING = 56;
+        const SLOWDOWN_ZONE_DIST = 21;
+        const LEFT_LANE_X = -2.25;
+        const RIGHT_LANE_X = 2.25;
+        const TRACK_WIDTH = 8.8;
+
+        const CUTE_CANVAS_FONT = '"Fredoka", "Chiron Hei HK", "Noto Sans TC", "PingFang HK", "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif';
+
+        let scene, camera, renderer;
+        let isPlaying = false;
+        let isPaused = false;
+
+        let sessionQuestions = [];
+        let spawnedGateCount = 0;
+        let currentActiveGateIndex = 0;
+        let hasChosenInSlowdownZone = false;
+        let hasSelectedLaneForCurrentGate = false;
+        let nextQuestionTimeoutId = null;
+        let postGateSlowdownUntil = 0;
+
+        let finishLineMesh = null;
+        let finishLineZ = null;
+        let hasCrossedFinishLine = false;
+
+        // Player & Fair Scoring State
+        let playerX = 0;
+        let targetPlayerX = 0;
+        let playerZ = 0;
+        let playerJumpY = 0;
+        let playerJumpVel = 0;
+        let actionScore = 0;
+        let totalScore = 0;
+        let passedGatesCount = 0;
+        let starsCollectedCount = 0;
+        let drugsHitCount = 0;
+        let comboStreak = 0;
+        let gateResults = [];
+        let highScore = parseInt(localStorage.getItem('antidrug_carnival_highscore') || '0');
+
+        const loadedImages = {};
+        const loadedTextures = {};
+
+        let playerGroup, playerSpriteMesh, playerRingMesh;
+        let trackSegments = [];
+        let gatePairs = [];
+        let trackItems = [];
+        let clouds = [];
+        let animatedSpectators = [];
+        let particlesGeo, particlesMat, particlesSystem;
+        const particleCount = 150;
+
+        let leftYesGateTexture = null;
+        let rightNoGateTexture = null;
+        let starLabelTexture = null;
+        let drugLabelTexture = null;
+
+        /**
+         * Safely dispose Three.js Group/Mesh geometries, materials, and dynamic textures
+         * to prevent WebGL memory leaks during long carnival booth sessions.
+         */
+        function disposeObject3D(rootObj) {
+            if (!rootObj) return;
+            const sharedTextures = new Set([
+                leftYesGateTexture,
+                rightNoGateTexture,
+                starLabelTexture,
+                drugLabelTexture,
+                ...Object.values(loadedTextures)
+            ]);
+
+            rootObj.traverse((child) => {
+                if (child.geometry) {
+                    child.geometry.dispose();
+                }
+                if (child.material) {
+                    const materials = Array.isArray(child.material) ? child.material : [child.material];
+                    materials.forEach((mat) => {
+                        if (!mat) return;
+                        if (mat.map && !sharedTextures.has(mat.map)) {
+                            mat.map.dispose();
+                        }
+                        mat.dispose();
+                    });
+                }
+            });
+        }
+
+        /**
+         * LEFT-ANCHORED PIXEL-SCANNING BOUNDING-BOX ENGINE (100% IMMUNE TO SAFARI / iOS CANVAS SHIFT BUGS)
+         */
+        function drawPixelPerfectTextInBox(targetCtx, text, boxX, boxY, boxW, boxH, options = {}) {
+            const offW = 2200;
+            const offH = 420;
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = offW;
+            offCanvas.height = offH;
+            const offCtx = offCanvas.getContext('2d');
+
+            const fontStr = options.font || `900 100px ${CUTE_CANVAS_FONT}`;
+            offCtx.font = fontStr;
+            offCtx.textAlign = 'left';
+            offCtx.textBaseline = 'middle';
+
+            const startX = 120;
+            const centerY = offH / 2;
+
+            if (options.shadowColor) {
+                offCtx.shadowColor = options.shadowColor;
+                offCtx.shadowBlur = options.shadowBlur || 10;
+                offCtx.shadowOffsetX = options.shadowOffsetX || 0;
+                offCtx.shadowOffsetY = options.shadowOffsetY || 3;
+            }
+
+            if (options.strokeStyle && options.lineWidth) {
+                offCtx.strokeStyle = options.strokeStyle;
+                offCtx.lineWidth = options.lineWidth;
+                offCtx.lineJoin = 'round';
+                offCtx.miterLimit = 2;
+                offCtx.strokeText(text, startX, centerY);
+            }
+
+            offCtx.fillStyle = options.fillStyle || '#ffffff';
+            offCtx.fillText(text, startX, centerY);
+
+            const imgData = offCtx.getImageData(0, 0, offW, offH).data;
+            let minX = offW, maxX = 0, minY = offH, maxY = 0;
+            let found = false;
+
+            for (let y = 0; y < offH; y += 2) {
+                const rowOffset = y * offW * 4;
+                for (let x = 0; x < offW; x += 2) {
+                    const alpha = imgData[rowOffset + x * 4 + 3];
+                    if (alpha > 15) {
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) return;
+
+            minX = Math.max(0, minX - 6);
+            minY = Math.max(0, minY - 6);
+            maxX = Math.min(offW - 1, maxX + 6);
+            maxY = Math.min(offH - 1, maxY + 6);
+
+            const actualW = Math.max(1, maxX - minX + 1);
+            const actualH = Math.max(1, maxY - minY + 1);
+
+            const scale = Math.min(1, boxW / actualW, boxH / actualH);
+            const destW = actualW * scale;
+            const destH = actualH * scale;
+            const destX = boxX + (boxW - destW) / 2;
+            const destY = boxY + (boxH - destH) / 2;
+
+            targetCtx.drawImage(offCanvas, minX, minY, actualW, actualH, destX, destY, destW, destH);
+        }
+
+        function drawRoundedBox(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        /**
+         * SAFARI-SAFE HTML QUESTION BANNER AUTO-FIT (GIANT MOBILE FONT!)
+         * Because #question-center-box spans 100% of the card width on mobile,
+         * questions render at a huge 32px ~ 34px on phones and 36px ~ 38px on desktop!
+         */
+        function fitQuestionBannerText() {
+            const centerBox = document.getElementById('question-center-box');
+            const emojiEl = document.getElementById('question-emoji');
+            const textEl = document.getElementById('question-text');
+            if (!centerBox || !emojiEl || !textEl) return;
+
+            const isMobile = window.innerWidth < 640;
+            const maxFont = isMobile ? 33 : (window.innerWidth < 1024 ? 36 : 38);
+            const minFont = isMobile ? 22 : 24;
+
+            let fontSize = maxFont;
+            textEl.style.fontSize = fontSize + 'px';
+
+            const boxW = centerBox.getBoundingClientRect().width;
+            if (boxW <= 20) return;
+
+            const safeAvailableW = boxW - 8;
+            const gapPx = isMobile ? 8 : 12;
+
+            while (fontSize > minFont) {
+                const neededW = emojiEl.getBoundingClientRect().width + textEl.scrollWidth + gapPx;
+                if (neededW <= safeAvailableW) break;
+                fontSize -= 1;
+                textEl.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        function preloadMascotImages(callback) {
+            const keys = Object.keys(MASCOT_ASSETS);
+            let loadedCount = 0;
+            const texLoader = new THREE.TextureLoader();
+
+            const checkDone = () => {
+                loadedCount++;
+                if (loadedCount === keys.length) {
+                    const warmFontsAndStart = async () => {
+                        if (document.fonts) {
+                            try {
+                                await document.fonts.ready;
+                                await Promise.allSettled([
+                                    document.fonts.load(`900 48px "Chiron Hei HK"`),
+                                    document.fonts.load(`700 48px "Fredoka"`),
+                                    document.fonts.load(`900 48px "Noto Sans TC"`)
+                                ]);
+                            } catch (e) {}
+                        }
+                        callback();
+                    };
+                    warmFontsAndStart();
+                }
+            };
+
+            keys.forEach(key => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => {
+                    loadedImages[key] = img;
+                    const tex = texLoader.load(MASCOT_ASSETS[key]);
+                    tex.encoding = THREE.sRGBEncoding;
+                    loadedTextures[key] = tex;
+                    checkDone();
+                };
+                img.onerror = () => {
+                    console.warn(`圖片載入失敗，請確認 GitHub 根目錄是否有檔案：${MASCOT_ASSETS[key]}`);
+                    checkDone();
+                };
+                img.src = MASCOT_ASSETS[key];
+            });
+        }
+
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+            container.innerHTML = '';
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x38bdf8);
+            scene.fog = new THREE.FogExp2(0x7dd3fc, 0.0085);
+
+            camera = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.1, 1000);
+            updateCameraForAspect();
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0xfef08a, 0.98);
+            scene.add(hemiLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            dirLight.position.set(14, 28, 16);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            playerGroup = new THREE.Group();
+            scene.add(playerGroup);
+
+            createParticleSystem();
+            createSkyCloudsAndBalloons();
+
+            // Create initial preview track & mascot so Start Screen has a lively 3D Carnival background
+            createTrackSegment(0);
+            createTrackSegment(-100);
+            initPlayerModel();
+            const camDistZ = window.innerWidth < 640 ? 9.8 : 10.5;
+            camera.position.set(0, 5.5, camDistZ);
+            camera.lookAt(0, 1.9, -10);
+            renderer.render(scene, camera);
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function updateCameraForAspect() {
+            if (!camera) return;
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.aspect = aspect;
+            // Closer FOV on mobile portrait so 3D Gates and Question Arches appear larger!
+            if (aspect < 0.65) {
+                camera.fov = 66;
+            } else if (aspect < 0.9) {
+                camera.fov = 60;
+            } else {
+                camera.fov = 55;
+            }
+            camera.updateProjectionMatrix();
+        }
+
+        function createSkyCloudsAndBalloons() {
+            const cloudMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, transparent: true, opacity: 0.94 });
+            const balloonColors = [0xf43f5e, 0xfacc15, 0xa855f7, 0x10b981, 0xf97316];
+
+            for (let i = 0; i < 16; i++) {
+                const cloudGroup = new THREE.Group();
+                const puffs = 3 + Math.floor(Math.random() * 3);
+                for (let p = 0; p < puffs; p++) {
+                    const puffGeo = new THREE.SphereGeometry(1.6 + Math.random() * 1.2, 10, 10);
+                    const puff = new THREE.Mesh(puffGeo, cloudMat);
+                    puff.position.set((p - 1.2) * 1.6, Math.random() * 0.6, (Math.random() - 0.5) * 0.8);
+                    cloudGroup.add(puff);
+                }
+                const side = i % 2 === 0 ? -1 : 1;
+                cloudGroup.position.set(side * (14 + Math.random() * 18), 11 + Math.random() * 8, -i * 22);
+                cloudGroup.userData = { baseY: cloudGroup.position.y, floatOffset: i * 0.7 };
+                scene.add(cloudGroup);
+                clouds.push(cloudGroup);
+
+                if (i % 3 === 0) {
+                    const bGroup = new THREE.Group();
+                    const bColor = balloonColors[(i / 3) % balloonColors.length];
+                    const bGeo = new THREE.SphereGeometry(2.1, 14, 14);
+                    const bMat = new THREE.MeshStandardMaterial({ color: bColor, roughness: 0.4 });
+                    const bMesh = new THREE.Mesh(bGeo, bMat);
+                    bGroup.add(bMesh);
+
+                    const basketGeo = new THREE.CylinderGeometry(0.55, 0.45, 0.65, 8);
+                    const basketMat = new THREE.MeshStandardMaterial({ color: 0xd97706 });
+                    const basket = new THREE.Mesh(basketGeo, basketMat);
+                    basket.position.y = -2.6;
+                    bGroup.add(basket);
+
+                    bGroup.position.set(-side * (16 + Math.random() * 12), 14 + Math.random() * 5, -i * 22 - 10);
+                    bGroup.userData = { baseY: bGroup.position.y, floatOffset: i * 1.1 + 1.5 };
+                    scene.add(bGroup);
+                    clouds.push(bGroup);
+                }
+            }
+        }
+
+        function create3DMascotRunner() {
+            const runnerGroup = new THREE.Group();
+
+            const ringGeo = new THREE.RingGeometry(0.85, 1.18, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xfacc15, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
+            playerRingMesh = new THREE.Mesh(ringGeo, ringMat);
+            playerRingMesh.rotation.x = -Math.PI / 2;
+            playerRingMesh.position.y = 0.03;
+            runnerGroup.add(playerRingMesh);
+
+            const shadowGeo = new THREE.CircleGeometry(0.82, 24);
+            const shadowMat = new THREE.MeshBasicMaterial({ color: 0x0f172a, transparent: true, opacity: 0.32 });
+            const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+            shadowMesh.rotation.x = -Math.PI / 2;
+            shadowMesh.position.y = 0.02;
+            runnerGroup.add(shadowMesh);
+
+            const spriteHeight = 2.65;
+            const spriteWidth = spriteHeight * (315 / 420);
+            const planeGeo = new THREE.PlaneGeometry(spriteWidth, spriteHeight);
+            const planeMat = new THREE.MeshBasicMaterial({
+                map: loadedTextures.back || null,
+                transparent: true,
+                alphaTest: 0.05,
+                side: THREE.DoubleSide
+            });
+
+            playerSpriteMesh = new THREE.Mesh(planeGeo, planeMat);
+            playerSpriteMesh.position.y = spriteHeight / 2 + 0.05;
+            playerSpriteMesh.renderOrder = 120;
+            runnerGroup.add(playerSpriteMesh);
+
+            return runnerGroup;
+        }
+
+        function createParticleSystem() {
+            particlesGeo = new THREE.BufferGeometry();
+            const posArray = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 20;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesMat = new THREE.PointsMaterial({
+                size: 0.26,
+                color: 0xfacc15,
+                transparent: true,
+                opacity: 0,
+                depthWrite: false
+            });
+            particlesSystem = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particlesSystem);
+        }
+
+        function triggerParticleBurst(x, y, z, colorHex = 0xfacc15) {
+            particlesMat.color.setHex(colorHex);
+            particlesMat.opacity = 1.0;
+            const positions = particlesGeo.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = x + (Math.random() - 0.5) * 4.2;
+                positions[i * 3 + 1] = y + (Math.random() - 0.5) * 3.8;
+                positions[i * 3 + 2] = z + (Math.random() - 0.5) * 3.5;
+            }
+            particlesGeo.attributes.position.needsUpdate = true;
+        }
+
+        function triggerDamageFlash() {
+            const flash = document.getElementById('damage-flash');
+            if (!flash) return;
+            flash.style.opacity = '1';
+            setTimeout(() => { flash.style.opacity = '0'; }, 180);
+        }
+
+        /**
+         * Build Gate Textures & 3D Floating Item Labels ONCE (Reused across sessions to prevent GPU memory leaks)
+         */
+        function buildFixedGateTextures() {
+            if (leftYesGateTexture && rightNoGateTexture && starLabelTexture && drugLabelTexture) {
+                return;
+            }
+
+            // 1. LEFT GATE: ⭕ 要！
+            const cYes = document.createElement('canvas');
+            cYes.width = 800;
+            cYes.height = 680;
+            const ctxY = cYes.getContext('2d');
+
+            const gradY = ctxY.createLinearGradient(0, 0, 0, 680);
+            gradY.addColorStop(0, '#34d399');
+            gradY.addColorStop(0.55, '#10b981');
+            gradY.addColorStop(1, '#047857');
+            ctxY.fillStyle = gradY;
+            ctxY.fillRect(0, 0, 800, 680);
+
+            ctxY.strokeStyle = '#ffffff';
+            ctxY.lineWidth = 26;
+            ctxY.strokeRect(16, 16, 768, 648);
+
+            ctxY.strokeStyle = '#fde047';
+            ctxY.lineWidth = 10;
+            ctxY.strokeRect(36, 36, 728, 608);
+
+            if (loadedImages.yes) {
+                ctxY.drawImage(loadedImages.yes, 245, 28, 310, 325);
+            }
+
+            // Enlarged Main Gate Choice Text
+            drawPixelPerfectTextInBox(ctxY, '⭕ 要！', 55, 365, 690, 150, {
+                font: `900 148px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#ffffff',
+                strokeStyle: '#064e3b',
+                lineWidth: 18,
+                shadowColor: 'rgba(0,0,0,0.38)',
+                shadowBlur: 10
+            });
+
+            // Enlarged Subtitle Pill Badge at bottom of Left Gate
+            ctxY.fillStyle = 'rgba(6, 78, 59, 0.68)';
+            drawRoundedBox(ctxY, 80, 532, 640, 88, 44);
+            ctxY.fill();
+            ctxY.lineWidth = 5;
+            ctxY.strokeStyle = 'rgba(254, 240, 138, 0.8)';
+            ctxY.stroke();
+
+            drawPixelPerfectTextInBox(ctxY, '★ 正確好行為', 120, 542, 560, 68, {
+                font: `900 58px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#fef08a'
+            });
+
+            leftYesGateTexture = new THREE.CanvasTexture(cYes);
+            leftYesGateTexture.needsUpdate = true;
+
+            // 2. RIGHT GATE: ❌ 不要！
+            const cNo = document.createElement('canvas');
+            cNo.width = 800;
+            cNo.height = 680;
+            const ctxN = cNo.getContext('2d');
+
+            const gradN = ctxN.createLinearGradient(0, 0, 0, 680);
+            gradN.addColorStop(0, '#fb7185');
+            gradN.addColorStop(0.55, '#ef4444');
+            gradN.addColorStop(1, '#b91c1c');
+            ctxN.fillStyle = gradN;
+            ctxN.fillRect(0, 0, 800, 680);
+
+            ctxN.strokeStyle = '#ffffff';
+            ctxN.lineWidth = 26;
+            ctxN.strokeRect(16, 16, 768, 648);
+
+            ctxN.strokeStyle = '#fde047';
+            ctxN.lineWidth = 10;
+            ctxN.strokeRect(36, 36, 728, 608);
+
+            if (loadedImages.no) {
+                ctxN.drawImage(loadedImages.no, 245, 28, 310, 325);
+            }
+
+            // Enlarged Main Gate Choice Text
+            drawPixelPerfectTextInBox(ctxN, '❌ 不要！', 55, 365, 690, 150, {
+                font: `900 144px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#ffffff',
+                strokeStyle: '#7f1d1d',
+                lineWidth: 18,
+                shadowColor: 'rgba(0,0,0,0.38)',
+                shadowBlur: 10
+            });
+
+            // Enlarged Subtitle Pill Badge at bottom of Right Gate
+            ctxN.fillStyle = 'rgba(127, 29, 29, 0.7)';
+            drawRoundedBox(ctxN, 80, 532, 640, 88, 44);
+            ctxN.fill();
+            ctxN.lineWidth = 5;
+            ctxN.strokeStyle = 'rgba(254, 240, 138, 0.8)';
+            ctxN.stroke();
+
+            drawPixelPerfectTextInBox(ctxN, '✕ 唔好試 DO NOT', 125, 542, 550, 68, {
+                font: `900 56px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#fef08a'
+            });
+
+            rightNoGateTexture = new THREE.CanvasTexture(cNo);
+            rightNoGateTexture.needsUpdate = true;
+
+            // 3. Cute 3D Floating Label for Star (+300)
+            const cStar = document.createElement('canvas');
+            cStar.width = 520;
+            cStar.height = 150;
+            const ctxS = cStar.getContext('2d');
+            ctxS.fillStyle = '#10b981';
+            drawRoundedBox(ctxS, 12, 12, 496, 126, 63);
+            ctxS.fill();
+            ctxS.lineWidth = 12;
+            ctxS.strokeStyle = '#fef08a';
+            ctxS.stroke();
+
+            drawPixelPerfectTextInBox(ctxS, '★ 星星 +300', 56, 28, 408, 94, {
+                font: `900 72px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#ffffff',
+                strokeStyle: '#065f46',
+                lineWidth: 10
+            });
+            starLabelTexture = new THREE.CanvasTexture(cStar);
+            starLabelTexture.needsUpdate = true;
+
+            // 4. Cute 3D Floating Label for Drug (-300)
+            const cDrug = document.createElement('canvas');
+            cDrug.width = 520;
+            cDrug.height = 150;
+            const ctxD = cDrug.getContext('2d');
+            ctxD.fillStyle = '#e11d48';
+            drawRoundedBox(ctxD, 12, 12, 496, 126, 63);
+            ctxD.fill();
+            ctxD.lineWidth = 12;
+            ctxD.strokeStyle = '#ffffff';
+            ctxD.stroke();
+
+            drawPixelPerfectTextInBox(ctxD, '✕ 毒品 -300', 56, 28, 408, 94, {
+                font: `900 72px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#fef08a',
+                strokeStyle: '#881337',
+                lineWidth: 10
+            });
+            drugLabelTexture = new THREE.CanvasTexture(cDrug);
+            drugLabelTexture.needsUpdate = true;
+        }
+
+        function createTrackSegment(zPos) {
+            const group = new THREE.Group();
+            group.position.z = zPos;
+
+            const grassGeo = new THREE.PlaneGeometry(90, 100);
+            const grassMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.9 });
+            const grass = new THREE.Mesh(grassGeo, grassMat);
+            grass.rotation.x = -Math.PI / 2;
+            grass.position.y = -0.05;
+            group.add(grass);
+
+            const leftLaneGeo = new THREE.PlaneGeometry(TRACK_WIDTH / 2, 100);
+            const leftLaneMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.5 });
+            const leftLane = new THREE.Mesh(leftLaneGeo, leftLaneMat);
+            leftLane.rotation.x = -Math.PI / 2;
+            leftLane.position.x = -TRACK_WIDTH / 4;
+            leftLane.receiveShadow = true;
+            group.add(leftLane);
+
+            const rightLaneGeo = new THREE.PlaneGeometry(TRACK_WIDTH / 2, 100);
+            const rightLaneMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5 });
+            const rightLane = new THREE.Mesh(rightLaneGeo, rightLaneMat);
+            rightLane.rotation.x = -Math.PI / 2;
+            rightLane.position.x = TRACK_WIDTH / 4;
+            rightLane.receiveShadow = true;
+            group.add(rightLane);
+
+            const railGeo = new THREE.BoxGeometry(0.42, 0.44, 100);
+            const leftRailMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x059669, emissiveIntensity: 0.35 });
+            const rightRailMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xb91c1c, emissiveIntensity: 0.35 });
+
+            const leftRail = new THREE.Mesh(railGeo, leftRailMat);
+            leftRail.position.set(-TRACK_WIDTH / 2 - 0.2, 0.22, 0);
+            group.add(leftRail);
+
+            const rightRail = new THREE.Mesh(railGeo, rightRailMat);
+            rightRail.position.set(TRACK_WIDTH / 2 + 0.2, 0.22, 0);
+            group.add(rightRail);
+
+            const lineGeo = new THREE.PlaneGeometry(0.24, 4.5);
+            const lineMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+            for (let z = -45; z < 50; z += 10) {
+                const centerDash = new THREE.Mesh(lineGeo, lineMat);
+                centerDash.rotation.x = -Math.PI / 2;
+                centerDash.position.set(0, 0.02, z);
+                group.add(centerDash);
+            }
+
+            const standColors = [0xfef08a, 0xfed7aa, 0xe9d5ff];
+            for (let side of [-1, 1]) {
+                for (let tier = 0; tier < 2; tier++) {
+                    const stepGeo = new THREE.BoxGeometry(1.8, 0.65, 100);
+                    const stepMat = new THREE.MeshStandardMaterial({ color: standColors[tier % standColors.length], roughness: 0.6 });
+                    const step = new THREE.Mesh(stepGeo, stepMat);
+                    step.position.set(side * (TRACK_WIDTH / 2 + 2.4 + tier * 1.9), 0.32 + tier * 0.65, 0);
+                    group.add(step);
+
+                    for (let cz = -42; cz < 45; cz += 9) {
+                        const spectatorGroup = new THREE.Group();
+                        spectatorGroup.position.set(
+                            side * (TRACK_WIDTH / 2 + 2.4 + tier * 1.9),
+                            0.65 + tier * 0.65,
+                            cz + (Math.random() * 2 - 1)
+                        );
+
+                        const colorHex = [0x38bdf8, 0xfacc15, 0x34d399, 0xf43f5e, 0xa855f7][Math.floor(Math.random() * 5)];
+                        const specBodyGeo = new THREE.CylinderGeometry(0.24, 0.26, 0.55, 8);
+                        const specBodyMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.4 });
+                        const specBody = new THREE.Mesh(specBodyGeo, specBodyMat);
+                        specBody.position.y = 0.28;
+                        spectatorGroup.add(specBody);
+
+                        const specHeadGeo = new THREE.SphereGeometry(0.2, 8, 8);
+                        const specHeadMat = new THREE.MeshStandardMaterial({ color: 0xffedd5 });
+                        const specHead = new THREE.Mesh(specHeadGeo, specHeadMat);
+                        specHead.position.y = 0.66;
+                        spectatorGroup.add(specHead);
+
+                        group.add(spectatorGroup);
+                        animatedSpectators.push({
+                            mesh: spectatorGroup,
+                            parentSegment: group,
+                            basePos: spectatorGroup.position.y,
+                            offset: Math.random() * Math.PI * 2
+                        });
+                    }
+                }
+            }
+
+            scene.add(group);
+            trackSegments.push(group);
+        }
+
+        // Larger, Bolder 3D Question Arch Banner for Mobile Readability
+        function create3DQuestionArchBanner(qData, questionNumber) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1400;
+            canvas.height = 340;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#ffffff';
+            drawRoundedBox(ctx, 16, 16, 1368, 308, 60);
+            ctx.fill();
+
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 24;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 8;
+            drawRoundedBox(ctx, 36, 36, 1328, 268, 44);
+            ctx.stroke();
+
+            const fullText = `第 ${questionNumber} 關：${qData.prompt}`;
+            drawPixelPerfectTextInBox(ctx, fullText, 70, 48, 1260, 244, {
+                font: `900 108px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#0f172a'
+            });
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+
+            const geo = new THREE.PlaneGeometry(10.6, 2.55);
+            const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.FrontSide });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(0, 5.1, 0);
+            return mesh;
+        }
+
+        function spawnGatePair(zPos) {
+            if (spawnedGateCount >= TOTAL_QUESTIONS) return;
+
+            const pairGroup = new THREE.Group();
+            pairGroup.position.z = zPos;
+
+            const qData = sessionQuestions[spawnedGateCount];
+            spawnedGateCount++;
+            const questionNumber = spawnedGateCount;
+
+            const gateWidth = 4.2;
+            const gateHeight = 3.8;
+            const gateGeo = new THREE.BoxGeometry(gateWidth, gateHeight, 0.28);
+
+            const leftMat = new THREE.MeshBasicMaterial({ map: leftYesGateTexture });
+            const leftGate = new THREE.Mesh(gateGeo, leftMat);
+            leftGate.position.set(LEFT_LANE_X, gateHeight / 2, 0);
+            pairGroup.add(leftGate);
+
+            const rightMat = new THREE.MeshBasicMaterial({ map: rightNoGateTexture });
+            const rightGate = new THREE.Mesh(gateGeo, rightMat);
+            rightGate.position.set(RIGHT_LANE_X, gateHeight / 2, 0);
+            pairGroup.add(rightGate);
+
+            const archBanner = create3DQuestionArchBanner(qData, questionNumber);
+            pairGroup.add(archBanner);
+
+            pairGroup.userData = {
+                passed: false,
+                qData: qData,
+                index: questionNumber
+            };
+
+            scene.add(pairGroup);
+            gatePairs.push(pairGroup);
+
+            if (spawnedGateCount === TOTAL_QUESTIONS) {
+                spawnFinishLine(zPos - 30);
+            }
+        }
+
+        function spawnFinishLine(zPos) {
+            finishLineZ = zPos;
+            const archGroup = new THREE.Group();
+            archGroup.position.z = zPos;
+
+            const stripGeo = new THREE.PlaneGeometry(TRACK_WIDTH, 2.4);
+            const stripCanvas = document.createElement('canvas');
+            stripCanvas.width = 512;
+            stripCanvas.height = 128;
+            const sCtx = stripCanvas.getContext('2d');
+            for (let r = 0; r < 2; r++) {
+                for (let c = 0; c < 8; c++) {
+                    sCtx.fillStyle = (r + c) % 2 === 0 ? '#ffffff' : '#0f172a';
+                    sCtx.fillRect(c * 64, r * 64, 64, 64);
+                }
+            }
+            const stripTex = new THREE.CanvasTexture(stripCanvas);
+            const stripMesh = new THREE.Mesh(stripGeo, new THREE.MeshBasicMaterial({ map: stripTex }));
+            stripMesh.rotation.x = -Math.PI / 2;
+            stripMesh.position.y = 0.03;
+            archGroup.add(stripMesh);
+
+            const pillarGeo = new THREE.CylinderGeometry(0.45, 0.45, 6.5, 16);
+            const pillarMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3 });
+
+            const p1 = new THREE.Mesh(pillarGeo, pillarMat);
+            p1.position.set(-TRACK_WIDTH / 2 - 0.3, 3.25, 0);
+            archGroup.add(p1);
+
+            const p2 = new THREE.Mesh(pillarGeo, pillarMat);
+            p2.position.set(TRACK_WIDTH / 2 + 0.3, 3.25, 0);
+            archGroup.add(p2);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#facc15';
+            drawRoundedBox(ctx, 12, 12, 1000, 232, 48);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 16;
+            ctx.stroke();
+
+            drawPixelPerfectTextInBox(ctx, "🏁 終點過關！ 🏁", 70, 40, 884, 176, {
+                font: `900 88px ${CUTE_CANVAS_FONT}`,
+                fillStyle: '#0f172a'
+            });
+
+            const bannerTex = new THREE.CanvasTexture(canvas);
+            const textPlaneGeo = new THREE.PlaneGeometry(TRACK_WIDTH + 1.4, 2.2);
+            const textPlaneMat = new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true });
+            const textPlane = new THREE.Mesh(textPlaneGeo, textPlaneMat);
+            textPlane.position.set(0, 5.8, 0);
+            archGroup.add(textPlane);
+
+            scene.add(archGroup);
+            finishLineMesh = archGroup;
+        }
+
+        function spawnRandomStarOrDrugItem(zCenter) {
+            const isStar = Math.random() < 0.5;
+            const itemLaneX = Math.random() < 0.5 ? LEFT_LANE_X : RIGHT_LANE_X;
+
+            if (isStar) {
+                const starGroup = new THREE.Group();
+                starGroup.position.set(itemLaneX, 0, zCenter);
+
+                const starGeo = new THREE.OctahedronGeometry(0.62, 0);
+                const starMat = new THREE.MeshStandardMaterial({
+                    color: 0xfacc15,
+                    metalness: 0.6,
+                    roughness: 0.2,
+                    emissive: 0xf59e0b,
+                    emissiveIntensity: 0.55
+                });
+                const starMesh = new THREE.Mesh(starGeo, starMat);
+                starMesh.position.y = 1.05;
+                starGroup.add(starMesh);
+
+                if (starLabelTexture) {
+                    const labelGeo = new THREE.PlaneGeometry(2.6, 0.75);
+                    const labelMat = new THREE.MeshBasicMaterial({ map: starLabelTexture, transparent: true });
+                    const labelMesh = new THREE.Mesh(labelGeo, labelMat);
+                    labelMesh.position.y = 2.15;
+                    starGroup.add(labelMesh);
+                }
+
+                starGroup.userData = { collected: false, type: 'star', rotMesh: starMesh };
+                scene.add(starGroup);
+                trackItems.push(starGroup);
+            } else {
+                const drugGroup = new THREE.Group();
+                drugGroup.position.set(itemLaneX, 0, zCenter);
+
+                const drugCoreGeo = new THREE.DodecahedronGeometry(0.58, 0);
+                const drugCoreMat = new THREE.MeshStandardMaterial({
+                    color: 0x9333ea,
+                    roughness: 0.3,
+                    emissive: 0xe11d48,
+                    emissiveIntensity: 0.65
+                });
+                const drugMesh = new THREE.Mesh(drugCoreGeo, drugCoreMat);
+                drugMesh.position.y = 1.05;
+                drugGroup.add(drugMesh);
+
+                if (drugLabelTexture) {
+                    const dLabelGeo = new THREE.PlaneGeometry(2.6, 0.75);
+                    const dLabelMat = new THREE.MeshBasicMaterial({ map: drugLabelTexture, transparent: true });
+                    const dLabelMesh = new THREE.Mesh(dLabelGeo, dLabelMat);
+                    dLabelMesh.position.y = 2.15;
+                    drugGroup.add(dLabelMesh);
+                }
+
+                drugGroup.userData = { collected: false, type: 'drug', rotMesh: drugMesh };
+                scene.add(drugGroup);
+                trackItems.push(drugGroup);
+            }
+        }
+
+        function presentActiveQuestion(index) {
+            if (index >= TOTAL_QUESTIONS) return;
+            currentActiveGateIndex = index;
+            hasChosenInSlowdownZone = false;
+            hasSelectedLaneForCurrentGate = false;
+
+            // Smoothly return runner to center line when a new question starts,
+            // so button glow state (unselected) matches the runner's neutral center position!
+            targetPlayerX = 0;
+            updateButtonSelectionVisuals(0);
+
+            const qData = sessionQuestions[index];
+            const badgeEl = document.getElementById('question-badge');
+            const emojiEl = document.getElementById('question-emoji');
+            const textEl = document.getElementById('question-text');
+            const cardEl = document.getElementById('question-card');
+            const hintEl = document.getElementById('thinking-hint');
+
+            if (badgeEl) badgeEl.innerText = `🎈 第 ${index + 1}/${TOTAL_QUESTIONS} 關`;
+            if (emojiEl) emojiEl.innerText = qData.emoji;
+            if (textEl) textEl.innerText = qData.prompt;
+            if (hintEl) {
+                hintEl.className = "text-xs sm:text-sm font-black text-amber-900 mt-1 flex items-center justify-center gap-1 whitespace-nowrap bg-amber-100/95 px-3 py-0.5 rounded-full border border-amber-300 shadow-sm";
+                hintEl.innerHTML = `<span>👇 拍下面</span><span class="text-emerald-600 font-black">【⭕ 要！】</span><span>定</span><span class="text-rose-600 font-black">【❌ 不要！】</span>`;
+            }
+
+            fitQuestionBannerText();
+            requestAnimationFrame(fitQuestionBannerText);
+
+            if (cardEl) {
+                cardEl.classList.remove('animate-question-pop');
+                void cardEl.offsetWidth;
+                cardEl.classList.add('animate-question-pop');
+            }
+
+            soundFx.playQuestionMP3(qData.audioFile);
+        }
+
+        function updateStarsHUD() {
+            const container = document.getElementById('hud-stars');
+            if (!container) return;
+            let html = '';
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                if (i < gateResults.length) {
+                    if (gateResults[i]) {
+                        html += `<i class="fa-solid fa-star text-amber-400 drop-shadow-[0_2px_4px_rgba(250,204,21,0.8)]"></i>`;
+                    } else {
+                        html += `<i class="fa-solid fa-circle-exclamation text-rose-400"></i>`;
+                    }
+                } else if (i === currentActiveGateIndex) {
+                    html += `<i class="fa-regular fa-star text-amber-300 animate-pulse"></i>`;
+                } else {
+                    html += `<i class="fa-regular fa-star text-slate-500"></i>`;
+                }
+            }
+            container.innerHTML = html;
+        }
+
+        function showFloatingScorePopup(text, styleType = 'star') {
+            const container = document.getElementById('score-popups-container');
+            if (!container) return;
+            const el = document.createElement('div');
+            if (styleType === 'combo') {
+                el.className = 'absolute text-emerald-700 font-black text-xl sm:text-3xl animate-score-popup flex items-center gap-2 bg-white/95 px-4 py-2 rounded-2xl border-4 border-emerald-400 shadow-xl whitespace-nowrap';
+                el.innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${text}`;
+            } else if (styleType === 'drug') {
+                el.className = 'absolute text-white font-black text-xl sm:text-2xl animate-score-popup flex items-center gap-1.5 bg-rose-600/95 px-4 py-1.5 rounded-full border-2 border-white shadow-xl whitespace-nowrap';
+                el.innerHTML = `<i class="fa-solid fa-skull-crossbones text-amber-200"></i> ${text}`;
+            } else {
+                el.className = 'absolute text-amber-300 font-black text-xl sm:text-2xl drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)] animate-score-popup flex items-center gap-1.5 bg-slate-900/90 px-4 py-1.5 rounded-full border-2 border-amber-400 whitespace-nowrap';
+                el.innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${text}`;
+            }
+
+            container.appendChild(el);
+            setTimeout(() => {
+                if (container.contains(el)) container.removeChild(el);
+            }, 950);
+        }
+
+        let reactionTimer = null;
+        function triggerMascotReaction(isCorrect, factText) {
+            const container = document.getElementById('mascot-reaction-container');
+            const card = document.getElementById('mascot-reaction-card');
+            const imgEl = document.getElementById('mascot-reaction-img');
+            const titleEl = document.getElementById('mascot-reaction-title');
+            const descEl = document.getElementById('mascot-reaction-desc');
+
+            if (!container || !card || !imgEl) return;
+            if (reactionTimer) clearTimeout(reactionTimer);
+
+            imgEl.src = isCorrect ? MASCOT_ASSETS.yes : MASCOT_ASSETS.no;
+
+            card.classList.remove('animate-feedback-toast');
+            void card.offsetWidth;
+
+            if (isCorrect) {
+                card.className = "px-4 py-3 sm:px-6 sm:py-4 rounded-[1.8rem] border-4 border-emerald-500 shadow-2xl flex items-center gap-3 max-w-lg w-full mx-auto bg-white/95 backdrop-blur-md animate-feedback-toast";
+                titleEl.className = "text-lg sm:text-xl font-black text-emerald-600 flex items-center gap-1.5 mb-0.5";
+                titleEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 答啱啦！好叻呀！ (+200分)`;
+            } else {
+                card.className = "px-4 py-3 sm:px-6 sm:py-4 rounded-[1.8rem] border-4 border-rose-500 shadow-2xl flex items-center gap-3 max-w-lg w-full mx-auto bg-white/95 backdrop-blur-md animate-feedback-toast";
+                titleEl.className = "text-lg sm:text-xl font-black text-rose-600 flex items-center gap-1.5 mb-0.5";
+                titleEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 小朋友記住呀：`;
+            }
+
+            descEl.innerText = factText;
+            container.classList.remove('hidden');
+
+            reactionTimer = setTimeout(() => {
+                container.classList.add('hidden');
+            }, 4600);
+        }
+
+        function initPlayerModel() {
+            while (playerGroup.children.length > 0) {
+                const child = playerGroup.children[0];
+                playerGroup.remove(child);
+                disposeObject3D(child);
+            }
+            const mascotRunner = create3DMascotRunner();
+            playerGroup.add(mascotRunner);
+        }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            updateCameraForAspect();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            fitQuestionBannerText();
+            if (confettiFx && confettiFx.active && confettiFx.canvas) {
+                confettiFx.canvas.width = window.innerWidth;
+                confettiFx.canvas.height = window.innerHeight;
+            }
+            if (scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+
+        function selectLane(direction) {
+            soundFx.initAudio();
+            if (!isPlaying || isPaused) return;
+
+            // Cancel pending center-reset if the player eagerly chooses for the next gate
+            if (nextQuestionTimeoutId) {
+                clearTimeout(nextQuestionTimeoutId);
+                nextQuestionTimeoutId = null;
+                const nextGate = gatePairs.find(g => !g.userData.passed);
+                if (nextGate && currentActiveGateIndex !== nextGate.userData.index - 1) {
+                    presentActiveQuestion(nextGate.userData.index - 1);
+                    updateStarsHUD();
+                }
+            }
+
+            hasSelectedLaneForCurrentGate = true;
+
+            if (direction < 0) {
+                targetPlayerX = LEFT_LANE_X;
+                updateButtonSelectionVisuals(-1);
+            } else if (direction > 0) {
+                targetPlayerX = RIGHT_LANE_X;
+                updateButtonSelectionVisuals(1);
+            }
+
+            const activeGate = gatePairs.find(g => !g.userData.passed);
+            if (activeGate) {
+                const absDist = Math.abs(activeGate.position.z - playerZ);
+                if (absDist <= SLOWDOWN_ZONE_DIST) {
+                    hasChosenInSlowdownZone = true;
+                }
+            }
+
+            soundFx.playLaneSwitch();
+        }
+
+        function updateButtonSelectionVisuals(dir) {
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            if (!btnLeft || !btnRight) return;
+
+            btnLeft.classList.remove('selected-glow');
+            btnRight.classList.remove('selected-glow');
+
+            if (dir < 0) {
+                btnLeft.classList.add('selected-glow');
+                if (playerRingMesh) playerRingMesh.material.color.setHex(0x10b981);
+            } else if (dir > 0) {
+                btnRight.classList.add('selected-glow');
+                if (playerRingMesh) playerRingMesh.material.color.setHex(0xef4444);
+            } else {
+                if (playerRingMesh) playerRingMesh.material.color.setHex(0xfacc15);
+            }
+        }
+
+        function checkCollisions() {
+            // 1. Gate Collisions
+            gatePairs.forEach(pair => {
+                if (!pair.userData.passed && Math.abs(playerZ - pair.position.z) < 1.35) {
+                    pair.userData.passed = true;
+
+                    const qData = pair.userData.qData;
+                    let isCorrect = false;
+                    let triggerX = 0;
+
+                    // Require an active lane choice (or being clearly in a lane) so standing idle at X=0 doesn't count as choosing Left
+                    if (!hasSelectedLaneForCurrentGate && Math.abs(playerX) < 0.5) {
+                        isCorrect = false;
+                        triggerX = 0;
+                    } else {
+                        const choseYes = (targetPlayerX !== 0) ? (targetPlayerX < 0) : (playerX < 0);
+                        triggerX = choseYes ? LEFT_LANE_X : RIGHT_LANE_X;
+                        isCorrect = (choseYes === qData.answerIsYes);
+                    }
+
+                    gateResults.push(isCorrect);
+                    postGateSlowdownUntil = Date.now() + 1800;
+
+                    if (isCorrect) {
+                        comboStreak++;
+                        const comboBonus = comboStreak > 1 ? comboStreak * 50 : 0;
+                        actionScore += 200 + comboBonus;
+                        passedGatesCount++;
+                        playerJumpVel = 0.22;
+
+                        soundFx.playGatePositive();
+                        triggerParticleBurst(triggerX, 1.8, playerZ, 0x34d399);
+                        triggerMascotReaction(true, qData.fact);
+
+                        if (comboStreak >= 2) {
+                            showFloatingScorePopup(`${comboStreak} 連勝！+${200 + comboBonus}`, 'combo');
+                        } else {
+                            showFloatingScorePopup(`+200 答啱！`, 'star');
+                        }
+                    } else {
+                        comboStreak = 0;
+                        soundFx.playGateNegative();
+                        triggerDamageFlash();
+                        triggerParticleBurst(triggerX, 1.8, playerZ, 0xf43f5e);
+                        triggerMascotReaction(false, qData.fact);
+                    }
+
+                    updateStarsHUD();
+
+                    if (spawnedGateCount < TOTAL_QUESTIONS) {
+                        const nextZ = pair.position.z - GATE_SPACING;
+                        spawnGatePair(nextZ);
+                        spawnRandomStarOrDrugItem(nextZ + 31);
+                        const nextIdx = pair.userData.index;
+                        if (nextQuestionTimeoutId) clearTimeout(nextQuestionTimeoutId);
+                        nextQuestionTimeoutId = setTimeout(() => {
+                            nextQuestionTimeoutId = null;
+                            if (isPlaying) {
+                                presentActiveQuestion(nextIdx);
+                                updateStarsHUD();
+                            }
+                        }, 650);
+                    }
+                }
+            });
+
+            // 2. Random Star (+300) or Drug (-300) Collision
+            trackItems.forEach(itemGroup => {
+                if (!itemGroup.userData.collected && Math.abs(playerZ - itemGroup.position.z) < 1.55) {
+                    if (Math.abs(playerX - itemGroup.position.x) < 1.55) {
+                        itemGroup.userData.collected = true;
+                        scene.remove(itemGroup);
+                        disposeObject3D(itemGroup);
+
+                        if (itemGroup.userData.type === 'star') {
+                            actionScore += 300;
+                            starsCollectedCount++;
+                            playerJumpVel = 0.16;
+                            soundFx.playStarCollect();
+                            triggerParticleBurst(playerX, 1.2, playerZ, 0xfacc15);
+                            showFloatingScorePopup("⭐ 星星 +300分！", 'star');
+                        } else {
+                            actionScore -= 300;
+                            drugsHitCount++;
+                            soundFx.playDrugHit();
+                            triggerDamageFlash();
+                            triggerParticleBurst(playerX, 1.2, playerZ, 0xdc2626);
+                            showFloatingScorePopup("☠️ 掂到毒品 -300分！", 'drug');
+                        }
+                    }
+                }
+            });
+
+            // 3. Finish Line Crossing
+            if (finishLineZ !== null && !hasCrossedFinishLine && playerZ <= finishLineZ) {
+                hasCrossedFinishLine = true;
+                soundFx.playVictory();
+                triggerParticleBurst(0, 4.5, finishLineZ, 0xfacc15);
+                triggerGameOver(false);
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const nowMs = Date.now();
+            const time = nowMs * 0.009;
+
+            // Gentle sky cloud & hot-air balloon animation even on Start / Pause / Result screens
+            clouds.forEach(c => {
+                if (c.userData && c.userData.baseY !== undefined) {
+                    c.position.y = c.userData.baseY + Math.sin(time * 0.25 + c.userData.floatOffset) * 0.35;
+                }
+            });
+
+            if (!isPlaying || isPaused) {
+                if (renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                }
+                return;
+            }
+
+            let currentSpeed = BASE_GAME_SPEED;
+            const activeGate = gatePairs.find(g => !g.userData.passed);
+            const hintEl = document.getElementById('thinking-hint');
+
+            if (nowMs < postGateSlowdownUntil) {
+                currentSpeed = BASE_GAME_SPEED;
+            } else if (activeGate) {
+                const distToGate = activeGate.position.z - playerZ;
+                const absDist = Math.abs(distToGate);
+
+                if (absDist <= SLOWDOWN_ZONE_DIST && absDist > 1.4) {
+                    if (!hasChosenInSlowdownZone) {
+                        currentSpeed = BASE_GAME_SPEED;
+                        if (hintEl && !hintEl.classList.contains('animate-pulse-hint')) {
+                            hintEl.classList.add('animate-pulse-hint');
+                            hintEl.innerHTML = `<span class="text-rose-600 font-black">⏰ 請揀跑道：【⭕ 要！】定【❌ 不要！】</span>`;
+                        }
+                    } else {
+                        currentSpeed = BASE_GAME_SPEED;
+                        if (hintEl && hintEl.classList.contains('animate-pulse-hint')) {
+                            hintEl.classList.remove('animate-pulse-hint');
+                        }
+                    }
+                }
+            }
+
+            playerZ -= currentSpeed;
+
+            const distanceScore = Math.floor(Math.abs(playerZ) * 2);
+            totalScore = Math.max(0, distanceScore + actionScore);
+
+            const prevX = playerX;
+            playerX += (targetPlayerX - playerX) * 0.24;
+            const velocityX = playerX - prevX;
+
+            if (playerJumpY > 0 || playerJumpVel !== 0) {
+                playerJumpY += playerJumpVel;
+                playerJumpVel -= 0.018;
+                if (playerJumpY <= 0) {
+                    playerJumpY = 0;
+                    playerJumpVel = 0;
+                }
+            }
+
+            playerGroup.position.set(playerX, 0, playerZ);
+
+            if (playerSpriteMesh) {
+                const runBounce = Math.abs(Math.sin(time * 2.2)) * 0.16;
+                playerSpriteMesh.position.y = 1.38 + runBounce + playerJumpY;
+                playerSpriteMesh.rotation.z = -velocityX * 0.85 + Math.sin(time * 2.2) * 0.04;
+            }
+
+            trackItems.forEach(itemGroup => {
+                if (itemGroup.userData.rotMesh) {
+                    itemGroup.userData.rotMesh.rotation.y += 0.05;
+                }
+            });
+
+            animatedSpectators.forEach(spec => {
+                spec.mesh.position.y = spec.basePos + Math.abs(Math.sin(time * 2.8 + spec.offset)) * 0.2;
+            });
+
+            if (particlesMat && particlesMat.opacity > 0) {
+                particlesMat.opacity -= 0.025;
+            }
+
+            const farthestZ = playerZ - 170;
+            const lastTrack = trackSegments[trackSegments.length - 1];
+            if (lastTrack && lastTrack.position.z > farthestZ) {
+                const nextZ = lastTrack.position.z - 100;
+                createTrackSegment(nextZ);
+
+                if (trackSegments.length > 5) {
+                    const oldTrack = trackSegments.shift();
+                    scene.remove(oldTrack);
+                    animatedSpectators = animatedSpectators.filter(s => s.parentSegment !== oldTrack);
+                    disposeObject3D(oldTrack);
+                }
+            }
+
+            const camDistZ = window.innerWidth < 640 ? 9.8 : 10.5;
+            camera.position.set(playerX * 0.28, 5.5, playerZ + camDistZ);
+            camera.lookAt(playerX * 0.18, 1.9, playerZ - 10);
+
+            checkCollisions();
+
+            const hudScore = document.getElementById('hud-score');
+            if (hudScore) hudScore.innerText = totalScore;
+
+            renderer.render(scene, camera);
+        }
+
+        function syncBgmSlidersUI() {
+            const pct = soundFx.bgmMuted ? 0 : Math.round(soundFx.bgmUserVolume * 100);
+            const sStart = document.getElementById('slider-bgm-start');
+            const sHud = document.getElementById('slider-bgm-hud');
+            const sPause = document.getElementById('slider-bgm-pause');
+            const lStart = document.getElementById('label-bgm-vol');
+            const lPause = document.getElementById('label-bgm-pause');
+            const iconBgm = document.getElementById('icon-bgm');
+
+            if (sStart) sStart.value = pct;
+            if (sHud) sHud.value = pct;
+            if (sPause) sPause.value = pct;
+            if (lStart) lStart.innerText = `${pct}%`;
+            if (lPause) lPause.innerText = `${pct}%`;
+            if (iconBgm) {
+                iconBgm.className = (pct === 0 || soundFx.bgmMuted)
+                    ? 'fa-solid fa-volume-xmark text-rose-400 text-xs sm:text-sm'
+                    : 'fa-solid fa-music text-amber-300 text-xs sm:text-sm';
+            }
+        }
+
+        function setupInputs() {
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+
+            const triggerLeft = (e) => {
+                e.stopPropagation();
+                selectLane(-1);
+            };
+            const triggerRight = (e) => {
+                e.stopPropagation();
+                selectLane(1);
+            };
+
+            btnLeft.addEventListener('pointerdown', triggerLeft);
+            btnRight.addEventListener('pointerdown', triggerRight);
+
+            const zoneLeft = document.getElementById('zone-left');
+            const zoneRight = document.getElementById('zone-right');
+            zoneLeft.addEventListener('pointerdown', () => selectLane(-1));
+            zoneRight.addEventListener('pointerdown', () => selectLane(1));
+
+            let touchStartX = null;
+            window.addEventListener('touchstart', (e) => {
+                if (!isPlaying || isPaused) return;
+                // Ignore touch gestures starting on range sliders or buttons
+                if (e.target && (e.target.closest('input[type="range"]') || e.target.closest('button'))) return;
+                if (e.touches && e.touches.length > 0) {
+                    touchStartX = e.touches[0].clientX;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isPlaying || isPaused || touchStartX === null) return;
+                if (e.target && e.target.closest('input[type="range"]')) return;
+                const currentX = e.touches[0].clientX;
+                const diffX = currentX - touchStartX;
+                if (Math.abs(diffX) > 28) {
+                    selectLane(diffX < 0 ? -1 : 1);
+                    touchStartX = currentX;
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => {
+                touchStartX = null;
+            });
+
+            window.addEventListener('keydown', (e) => {
+                if (isPlaying && !isPaused) {
+                    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                        selectLane(-1);
+                    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                        selectLane(1);
+                    }
+                } else if (!isPlaying && (e.key === ' ' || e.key === 'Enter')) {
+                    const startScreenVisible = !document.getElementById('screen-start').classList.contains('hidden');
+                    const gameOverVisible = !document.getElementById('screen-gameover').classList.contains('hidden');
+                    if (startScreenVisible || gameOverVisible) {
+                        startGame();
+                    }
+                }
+            });
+
+            const replayVoiceHandler = (e) => {
+                e.stopPropagation();
+                soundFx.initAudio();
+                if (sessionQuestions[currentActiveGateIndex]) {
+                    soundFx.playQuestionMP3(sessionQuestions[currentActiveGateIndex].audioFile);
+                }
+            };
+            document.getElementById('btn-replay-voice').addEventListener('click', replayVoiceHandler);
+            const mobileReplayBtn = document.getElementById('btn-replay-voice-mobile');
+            if (mobileReplayBtn) mobileReplayBtn.addEventListener('click', replayVoiceHandler);
+            document.getElementById('question-card').addEventListener('click', replayVoiceHandler);
+
+            document.getElementById('btn-voice-toggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                soundFx.voiceEnabled = !soundFx.voiceEnabled;
+                const icon = document.getElementById('icon-voice');
+                const text = document.getElementById('text-voice');
+                const btn = document.getElementById('btn-voice-toggle');
+                if (soundFx.voiceEnabled) {
+                    icon.className = 'fa-solid fa-volume-high text-xs sm:text-sm';
+                    text.innerText = '讀題：開';
+                    btn.className = 'btn-bounce bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-2 sm:px-3 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white flex items-center justify-center h-8 sm:h-10 gap-1 text-xs sm:text-sm whitespace-nowrap';
+                    if (sessionQuestions[currentActiveGateIndex]) {
+                        soundFx.playQuestionMP3(sessionQuestions[currentActiveGateIndex].audioFile);
+                    }
+                } else {
+                    soundFx.stopQuestionVoice();
+                    icon.className = 'fa-solid fa-volume-xmark text-xs sm:text-sm';
+                    text.innerText = '讀題：關';
+                    btn.className = 'btn-bounce bg-slate-700 hover:bg-slate-600 text-slate-200 font-black px-2 sm:px-3 rounded-xl sm:rounded-2xl shadow-lg border-2 border-slate-400 flex items-center justify-center h-8 sm:h-10 gap-1 text-xs sm:text-sm whitespace-nowrap';
+                }
+            });
+
+            const handleBgmSliderInput = (e) => {
+                e.stopPropagation();
+                const val = parseInt(e.target.value, 10) / 100;
+                soundFx.setBgmUserVolume(val);
+                syncBgmSlidersUI();
+            };
+
+            ['slider-bgm-start', 'slider-bgm-hud', 'slider-bgm-pause'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', handleBgmSliderInput);
+                    el.addEventListener('change', handleBgmSliderInput);
+                    el.addEventListener('pointerdown', (e) => {
+                        e.stopPropagation();
+                        soundFx.initAudio();
+                    });
+                    el.addEventListener('touchstart', (e) => {
+                        e.stopPropagation();
+                        soundFx.initAudio();
+                    }, { passive: true });
+                    el.addEventListener('touchmove', (e) => {
+                        e.stopPropagation();
+                    }, { passive: true });
+                }
+            });
+
+            document.getElementById('btn-bgm-mute').addEventListener('click', (e) => {
+                e.stopPropagation();
+                soundFx.toggleBgmMute();
+                syncBgmSlidersUI();
+            });
+
+            syncBgmSlidersUI();
+        }
+
+        function startGame() {
+            if (confettiFx) confettiFx.stop();
+            if (nextQuestionTimeoutId) {
+                clearTimeout(nextQuestionTimeoutId);
+                nextQuestionTimeoutId = null;
+            }
+
+            soundFx.initAudio();
+            soundFx.startBGM();
+
+            buildFixedGateTextures();
+
+            sessionQuestions = buildFiveQuestionSession();
+
+            playerX = 0;
+            targetPlayerX = 0;
+            playerZ = 0;
+            playerJumpY = 0;
+            playerJumpVel = 0;
+            actionScore = 0;
+            totalScore = 0;
+            passedGatesCount = 0;
+            starsCollectedCount = 0;
+            drugsHitCount = 0;
+            comboStreak = 0;
+            spawnedGateCount = 0;
+            currentActiveGateIndex = 0;
+            hasChosenInSlowdownZone = false;
+            hasSelectedLaneForCurrentGate = false;
+            postGateSlowdownUntil = 0;
+            gateResults = [];
+            finishLineZ = null;
+            hasCrossedFinishLine = false;
+
+            isPlaying = true;
+            isPaused = false;
+
+            // Properly remove and dispose previous session's 3D meshes & dynamic textures
+            trackSegments.forEach(s => {
+                scene.remove(s);
+                disposeObject3D(s);
+            });
+            gatePairs.forEach(g => {
+                scene.remove(g);
+                disposeObject3D(g);
+            });
+            trackItems.forEach(c => {
+                scene.remove(c);
+                disposeObject3D(c);
+            });
+            animatedSpectators = [];
+            if (finishLineMesh) {
+                scene.remove(finishLineMesh);
+                disposeObject3D(finishLineMesh);
+                finishLineMesh = null;
+            }
+
+            trackSegments = [];
+            gatePairs = [];
+            trackItems = [];
+
+            createTrackSegment(0);
+            createTrackSegment(-100);
+            createTrackSegment(-200);
+
+            spawnGatePair(-50);
+            spawnRandomStarOrDrugItem(-23);
+
+            initPlayerModel();
+
+            if (reactionTimer) clearTimeout(reactionTimer);
+            document.getElementById('mascot-reaction-container').classList.add('hidden');
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-pause').classList.add('hidden');
+            document.getElementById('screen-gameover').classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            document.getElementById('touch-controller').classList.remove('hidden');
+
+            presentActiveQuestion(0);
+            updateStarsHUD();
+        }
+
+        function togglePause() {
+            if (!isPlaying) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                soundFx.stopQuestionVoice();
+                document.getElementById('screen-pause').classList.remove('hidden');
+            } else {
+                document.getElementById('screen-pause').classList.add('hidden');
+                soundFx.startBGM();
+            }
+        }
+
+        function triggerGameOver(isEarlyQuit = false) {
+            isPlaying = false;
+            if (nextQuestionTimeoutId) {
+                clearTimeout(nextQuestionTimeoutId);
+                nextQuestionTimeoutId = null;
+            }
+            soundFx.stopQuestionVoice();
+
+            if (totalScore > highScore) {
+                highScore = totalScore;
+                localStorage.setItem('antidrug_carnival_highscore', highScore);
+            }
+
+            document.getElementById('final-score').innerText = totalScore;
+            document.getElementById('best-score').innerText = highScore;
+            document.getElementById('final-gates').innerText = `${passedGatesCount} / ${TOTAL_QUESTIONS} 題`;
+
+            const finalItemsEl = document.getElementById('final-items');
+            if (finalItemsEl) {
+                finalItemsEl.innerText = `⭐ ${starsCollectedCount} 粒 ｜ ☠️ ${drugsHitCount} 次`;
+            }
+
+            const starRibbon = document.getElementById('result-star-ribbon');
+            if (starRibbon) {
+                let starHtml = '';
+                for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                    const earned = i < passedGatesCount;
+                    const delayMs = i * 110;
+                    if (earned) {
+                        starHtml += `<span class="text-2xl sm:text-3xl inline-block opacity-0 animate-star-pop drop-shadow" style="animation-delay: ${delayMs}ms;">⭐</span>`;
+                    } else {
+                        starHtml += `<span class="text-xl sm:text-2xl inline-block opacity-40 grayscale">⭐</span>`;
+                    }
+                }
+                starRibbon.innerHTML = starHtml;
+            }
+
+            const resTitle = document.getElementById('result-title');
+            const resSub = document.getElementById('result-subtitle');
+            const resBadge = document.getElementById('result-badge');
+            const resMascot = document.getElementById('result-mascot-img');
+
+            if (isEarlyQuit) {
+                resBadge.innerText = "🎈 快樂完成挑戰";
+                resBadge.className = "inline-block px-4 py-1 rounded-full text-xs sm:text-sm font-black bg-sky-300 text-slate-950 border-2 border-white shadow-md mb-1.5";
+                resTitle.innerText = "👏 表現好棒呀！";
+                resSub.innerText = "記住向毒品大聲講「DO NOT！」";
+                resMascot.src = MASCOT_ASSETS.front;
+            } else if (passedGatesCount === TOTAL_QUESTIONS) {
+                resBadge.innerText = "👑 超級無毒小狀元（滿分大獎！）";
+                resBadge.className = "inline-block px-4 py-1 rounded-full text-xs sm:text-sm font-black bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 text-slate-950 border-2 border-white shadow-md mb-1.5";
+                resTitle.innerText = "🎉 5 關全中！太叻啦！";
+                resSub.innerText = "你全部答啱晒，係最叻嘅無毒小狀元！";
+                resMascot.src = MASCOT_ASSETS.yes;
+            } else if (passedGatesCount >= 3) {
+                resBadge.innerText = "🦸‍♂️ 正義禁毒小超人";
+                resBadge.className = "inline-block px-4 py-1 rounded-full text-xs sm:text-sm font-black bg-emerald-400 text-slate-950 border-2 border-white shadow-md mb-1.5";
+                resTitle.innerText = "🎉 成功闖關！好叻呀！";
+                resSub.innerText = "做得好好！記住大麻朱古力同毒品全部都唔好試！";
+                resMascot.src = MASCOT_ASSETS.front;
+            } else {
+                resBadge.innerText = "🌱 勇敢嘗試小隊員";
+                resBadge.className = "inline-block px-4 py-1 rounded-full text-xs sm:text-sm font-black bg-rose-400 text-white border-2 border-white shadow-md mb-1.5";
+                resTitle.innerText = "💪 完成 5 關大冒險！";
+                resSub.innerText = "下次記住：見到毒品揀右邊「❌ 不要！」，好行為揀左邊「⭕ 要！」";
+                resMascot.src = MASCOT_ASSETS.no;
+            }
+
+            document.getElementById('hud').classList.add('hidden');
+            document.getElementById('touch-controller').classList.add('hidden');
+            document.getElementById('screen-pause').classList.add('hidden');
+            document.getElementById('screen-gameover').classList.remove('hidden');
+
+            if (confettiFx) confettiFx.start();
+        }
+
+        window.onload = function() {
+            confettiFx = new ConfettiCelebration();
+
+            document.getElementById('start-logo-img').src = MASCOT_ASSETS.logo;
+            document.getElementById('hud-logo-img').src = MASCOT_ASSETS.logo;
+            document.getElementById('result-logo-img').src = MASCOT_ASSETS.logo;
+
+            document.getElementById('start-mascot-img').src = MASCOT_ASSETS.front;
+            document.getElementById('hud-mascot-host').src = MASCOT_ASSETS.front;
+            document.getElementById('pause-mascot-img').src = MASCOT_ASSETS.front;
+            document.getElementById('result-mascot-img').src = MASCOT_ASSETS.yes;
+
+            document.getElementById('rule-yes-img').src = MASCOT_ASSETS.yes;
+            document.getElementById('rule-no-img').src = MASCOT_ASSETS.no;
+            document.getElementById('btn-yes-mascot').src = MASCOT_ASSETS.yes;
+            document.getElementById('btn-no-mascot').src = MASCOT_ASSETS.no;
+            const mobileNoMascot = document.getElementById('btn-no-mascot-mobile');
+            if (mobileNoMascot) mobileNoMascot.src = MASCOT_ASSETS.no;
+
+            preloadMascotImages(() => {
+                initThree();
+                buildFixedGateTextures();
+                setupInputs();
+                animate();
+            });
+
+            const modalDisclaimer = document.getElementById('modal-disclaimer');
+            document.getElementById('btn-show-disclaimer').addEventListener('click', () => modalDisclaimer.classList.remove('hidden'));
+            document.getElementById('btn-close-disclaimer').addEventListener('click', () => modalDisclaimer.classList.add('hidden'));
+            document.getElementById('btn-ack-disclaimer').addEventListener('click', () => modalDisclaimer.classList.add('hidden'));
+
+            document.getElementById('btn-start').addEventListener('click', startGame);
+            document.getElementById('btn-pause').addEventListener('click', togglePause);
+            document.getElementById('btn-resume').addEventListener('click', togglePause);
+            document.getElementById('btn-restart-pause').addEventListener('click', startGame);
+            document.getElementById('btn-quit').addEventListener('click', () => triggerGameOver(true));
+            document.getElementById('btn-next-player').addEventListener('click', startGame);
+
+            document.getElementById('btn-replay').addEventListener('click', () => {
+                if (confettiFx) confettiFx.stop();
+                soundFx.pauseBGM();
+                document.getElementById('screen-gameover').classList.add('hidden');
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('touch-controller').classList.add('hidden');
+                document.getElementById('screen-start').classList.remove('hidden');
+            });
+        };
+    </script>
+</body>
+</html>
